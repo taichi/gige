@@ -1,0 +1,128 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+	}
+}
+
+group = 'io.gige'
+version = "0.1.0"
+
+apply plugin: 'java'
+
+repositories {
+	jcenter()
+	mavenCentral()
+}
+
+sourceCompatibility = targetCompatibility = 1.8
+
+tasks.withType(AbstractCompile) each { it.options.encoding = "UTF-8" }
+
+test {
+	systemProperty("java.awt.headless", "true")
+}
+
+dependencies {
+	compile 'org.eclipse.tycho:org.eclipse.jdt.core:3.10.0.v20140604-1726'
+	compile 'org.eclipse.tycho:org.eclipse.jdt.compiler.apt:1.1.0.v20140509-1235'
+
+	testCompile 'org.jmockit:jmockit:1.+'
+	compile 'junit:junit:4.+'
+}
+
+apply plugin: 'eclipse'
+
+eclipse {
+	classpath {
+		containers = [
+			'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+		]
+	}
+}
+
+jar.manifest {
+	attributes(
+		'Implementation-Title' : name,
+		'Implementation-Version': version,
+		'Implementation-Vendor': 'siden.ninja',
+		'Built-JDK': "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})",
+		'Built-Gradle': gradle.gradleVersion
+	)
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+	classifier = "javadoc"
+	from javadoc
+}
+
+artifacts {
+	archives sourcesJar
+	archives javadocJar
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+def mypom = {
+	scm {
+		url 'https://github.com/taichi/gige'
+	}
+	licenses {
+		license {
+			name "The Apache Software License, Version 2.0"
+			url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+			distribution "repo"
+		}
+	}
+	developers {
+		developer {
+			id "taichi"
+			name "SATO Taichi"
+			email "ryushi@gmail.com"
+		}
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			
+			artifact sourcesJar
+			artifact javadocJar
+			
+			pom.withXml {
+				def root = asNode()
+				root.children().last() + mypom
+			}
+		}
+	}
+}
+
+bintray {
+	user = project.hasProperty('bintrayUsername') ? project.getProperty('bintrayUsername') : null
+	key =  project.hasProperty('bintrayAPIKey') ? project.getProperty('bintrayAPIKey') : null
+	publications = ['mavenJava']
+	pkg {
+		repo = 'maven'
+		name = 'gige'
+		licenses = ['Apache-2.0']
+	}
+}
+
+task install(dependsOn: ['publishToMavenLocal', 'publishToMavenLocal']) << {
+	logger.info "Installing $project.name"
+}
+
+task release(dependsOn: ['bintrayUpload', 'bintrayUpload']) << {
+	logger.info "Upload to bintray"
+}
