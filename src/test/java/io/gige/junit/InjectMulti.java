@@ -30,13 +30,13 @@ import org.junit.runner.RunWith;
 @RunWith(CompilerRunner.class)
 public class InjectMulti {
 	@Compilers
-	CompilerContext builder;
+	CompilerContext context;
 	static int i = 0;
 
 	@Test
 	public void runningTests() throws Exception {
 		i++;
-		assertNotNull(builder);
+		assertNotNull(context);
 	}
 
 	@AfterClass
