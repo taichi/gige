@@ -44,8 +44,8 @@ public class TypeHierarchyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.context.setCharset("UTF-8").set(Locale.JAPANESE)
-				.setSourcePath("src/test/java").setUnits(TestSource.class)
+		this.context.set(Locale.JAPANESE).setSourcePath("src/test/java")
+				.setUnits(TestSource.class)
 				.set(diag -> System.out.println(diag));
 	}
 

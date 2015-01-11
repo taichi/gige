@@ -48,7 +48,7 @@ public class CompilerContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.context.setCharset("UTF-8").set(Locale.JAPANESE)
+		this.context.set(Locale.JAPANESE)
 				.setSourcePath("src/test/java", "src/test/resources")
 				.set(diag -> System.out.println(diag))
 				.setUnits(TestSource.class);

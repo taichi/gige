@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,7 +62,7 @@ public class CompilerContext implements AutoCloseable {
 
 	protected Locale locale;
 
-	protected Charset charset;
+	protected Charset charset = StandardCharsets.UTF_8;
 
 	protected Writer out;
 
