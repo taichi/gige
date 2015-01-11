@@ -33,6 +33,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 
 import org.eclipse.jdt.internal.compiler.Compiler;
+import org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
@@ -139,22 +140,7 @@ public class CompilationTaskImpl implements CompilationTask {
 	}
 
 	protected IErrorHandlingPolicy getHandlingPolicy() {
-		return new IErrorHandlingPolicy() {
-			@Override
-			public boolean proceedOnErrors() {
-				return false;
-			}
-
-			@Override
-			public boolean stopOnFirstError() {
-				return false;
-			}
-
-			@Override
-			public boolean ignoreAllErrors() {
-				return false;
-			}
-		};
+		return DefaultErrorHandlingPolicies.exitAfterAllProblems();
 	}
 
 	@Override
