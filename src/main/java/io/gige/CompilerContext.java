@@ -19,6 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.gige.internal.CompositeDiagnosticListener;
+import io.gige.internal.ResourceProxyJavaFileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
@@ -246,17 +248,18 @@ public class CompilerContext implements AutoCloseable {
 		manager.setLocation(StandardLocation.SOURCE_OUTPUT, sourceOutputs);
 		this.managers.add(manager);
 
-		CompilationTask task = compiler.getTask(
-				this.getOut(),
-				manager,
-				dl,
-				this.options,
-				Collections.emptyList(),
-				this.units.stream().map(t -> t.apply(manager))
+		CompilationTask task = compiler.getTask(this.getOut(), wrap(manager),
+				dl, this.options, Collections.emptyList(), this.units.stream()
+						.map(t -> t.apply(manager))
 						.collect(Collectors.toList()));
 		task.setLocale(getLocale());
 
 		return newResult(dl.getDiagnostics(), manager, processors, task);
+	}
+
+	protected JavaFileManager wrap(StandardJavaFileManager manager) {
+		// emulate auto resource copying.
+		return new ResourceProxyJavaFileManager(manager);
 	}
 
 	protected CompilationResult newResult(

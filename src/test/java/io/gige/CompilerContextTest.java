@@ -49,7 +49,7 @@ public class CompilerContextTest {
 	@Before
 	public void setUp() throws Exception {
 		this.context.setCharset("UTF-8").set(Locale.JAPANESE)
-				.setSourcePath("src/test/java")
+				.setSourcePath("src/test/java", "src/test/resources")
 				.set(diag -> System.out.println(diag))
 				.setUnits(TestSource.class);
 	}
@@ -329,5 +329,13 @@ public class CompilerContextTest {
 				result.getTypeMirror("java.lang.String[]").get().toString());
 		assertEquals("java.lang.String[][][]",
 				result.getTypeMirror(String[][][].class).get().toString());
+	}
+
+	@Test
+	public void resourceCopy() throws Exception {
+		ResourceProcessor processor = new ResourceProcessor();
+		CompilationResult result = this.context.set(processor).compile();
+		assertTrue(result.success());
+		assertTrue(processor.found);
 	}
 }

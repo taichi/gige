@@ -4,6 +4,7 @@
 gradle.properties
 gradle-app.setting
 
+bin/
 */bin
 *.project
 *.classpath
