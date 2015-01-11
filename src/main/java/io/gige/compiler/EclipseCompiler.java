@@ -76,7 +76,19 @@ public class EclipseCompiler implements JavaCompiler {
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
 			Locale locale, Charset charset) {
 		if (this.provided == null) {
-			this.provided = new EclipseFileManager(locale, charset) {
+			this.provided = newFileManager(locale, charset);
+			this.filesystem = ClasspathContainer.configure(this.provided);
+		}
+		return this.provided;
+	}
+
+	protected StandardJavaFileManager newFileManager(Locale locale,
+			Charset charset) {
+		final String OS = "os.name";
+		String current = System.getProperty(OS);
+		try {
+			System.setProperty(OS, "xxx");
+			return new EclipseFileManager(locale, charset) {
 				@Override
 				public void close() throws IOException {
 					super.close();
@@ -85,9 +97,9 @@ public class EclipseCompiler implements JavaCompiler {
 					filesystem = null;
 				}
 			};
-			this.filesystem = ClasspathContainer.configure(this.provided);
+		} finally {
+			System.setProperty(OS, current);
 		}
-		return this.provided;
 	}
 
 	@Override
