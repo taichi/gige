@@ -15,20 +15,19 @@
  */
 package io.gige.junit;
 
+import io.gige.CompilerContext;
 import io.gige.Compilers;
 import io.gige.junit.internal.CompilerInjectionRunner;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
 import org.junit.runner.Runner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 
 /**
@@ -40,14 +39,21 @@ public class CompilerRunner extends Suite {
 		super(klass, configureRunners(klass));
 	}
 
-	protected static List<Runner> configureRunners(Class<?> clazz) {
+	protected static List<Runner> configureRunners(Class<?> clazz)
+			throws InitializationError {
 		TestClass testClass = new TestClass(clazz);
 		List<FrameworkField> fields = testClass
 				.getAnnotatedFields(Compilers.class);
 		if (fields == null || fields.isEmpty()) {
-			RunnerBuilder rb = new AllDefaultPossibilitiesBuilder(true);
-			return Arrays
-					.asList(rb.safeRunnerForClass(testClass.getJavaClass()));
+			throw new InitializationError(
+					"You must annotate @Compilers to field.");
+		}
+		for (FrameworkField ff : fields) {
+			Field f = ff.getField();
+			if (CompilerContext.class.isAssignableFrom(f.getType()) == false) {
+				throw new InitializationError(
+						"annotated field must be io.gige.CompilerContext.");
+			}
 		}
 		return fields.stream().map(FrameworkField::getField)
 				.map(f -> f.getAnnotation(Compilers.class))

@@ -15,8 +15,8 @@
  */
 package io.gige.junit.internal;
 
-import io.gige.Compilers.Type;
 import io.gige.CompilerContext;
+import io.gige.Compilers.Type;
 import io.gige.util.ExceptionalConsumer;
 
 import java.lang.reflect.Field;
@@ -47,8 +47,9 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
 	public static Runner safeRunnerForClass(Class<?> clazz, Type type) {
 		try {
 			return new CompilerInjectionRunner(clazz, type);
-		} catch (Throwable e) {
-			return new ErrorReportingRunner(clazz, e);
+		} catch (InitializationError e) {
+			e.getCauses().forEach(Throwable::printStackTrace);
+			return new ErrorReportingRunner(clazz, e.getCause());
 		}
 	}
 
