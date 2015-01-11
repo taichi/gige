@@ -56,6 +56,7 @@ public class UseParameterized {
 
 	@After
 	public void tearDown() throws Exception {
+		// you must release external resources here.
 		this.context.close();
 	}
 

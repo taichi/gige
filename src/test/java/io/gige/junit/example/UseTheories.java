@@ -42,7 +42,7 @@ public class UseTheories {
 
 	@Theory
 	public void test(Compilers.Type type) throws Exception {
-		System.out.println(type);
+		// you must release external resources
 		try (CompilerContext context = new CompilerContext(type)) {
 			CompilationResult result = setUp(context)
 					.setUnits(TestSource.class).compile();
