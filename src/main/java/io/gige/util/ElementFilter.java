@@ -31,6 +31,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
 /**
+ * replacement of javax.lang.model.util.ElementFilter.<br/>
+ * this class built on Java8 Stream API.
+ * 
  * @author taichi
  */
 public interface ElementFilter {
@@ -43,8 +46,14 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return StreamSupport.stream(elements.spliterator(), false)
-				.filter(fields()).map(VariableElement.class::cast);
+		return fieldsIn(StreamSupport.stream(elements.spliterator(), false));
+	}
+
+	public static <T extends Element> Stream<VariableElement> fieldsIn(
+			Stream<T> elements) {
+		Objects.requireNonNull(elements);
+
+		return elements.filter(fields()).map(VariableElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> fields() {
@@ -60,8 +69,16 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return StreamSupport.stream(elements.spliterator(), false)
-				.filter(constructors()).map(ExecutableElement.class::cast);
+		return constructorsIn(StreamSupport.stream(elements.spliterator(),
+				false));
+	}
+
+	public static <T extends Element> Stream<ExecutableElement> constructorsIn(
+			Stream<T> elements) {
+		Objects.requireNonNull(elements);
+
+		return elements.filter(constructors()).map(
+				ExecutableElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> constructors() {
@@ -76,8 +93,14 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return StreamSupport.stream(elements.spliterator(), false)
-				.filter(methods()).map(ExecutableElement.class::cast);
+		return methodsIn(StreamSupport.stream(elements.spliterator(), false));
+	}
+
+	public static <T extends Element> Stream<ExecutableElement> methodsIn(
+			Stream<T> elements) {
+		Objects.requireNonNull(elements);
+
+		return elements.filter(methods()).map(ExecutableElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> methods() {
@@ -88,8 +111,13 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return StreamSupport.stream(elements.spliterator(), false)
-				.filter(types()).map(TypeElement.class::cast);
+		return typesIn(StreamSupport.stream(elements.spliterator(), false));
+	}
+
+	public static <T extends Element> Stream<TypeElement> typesIn(
+			Stream<T> elements) {
+		Objects.requireNonNull(elements);
+		return elements.filter(types()).map(TypeElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> types() {
@@ -101,8 +129,14 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return StreamSupport.stream(elements.spliterator(), false)
-				.filter(packages()).map(PackageElement.class::cast);
+		return packagesIn(StreamSupport.stream(elements.spliterator(), false));
+	}
+
+	public static <T extends Element> Stream<PackageElement> packagesIn(
+			Stream<T> elements) {
+		Objects.requireNonNull(elements);
+
+		return elements.filter(packages()).map(PackageElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> packages() {
