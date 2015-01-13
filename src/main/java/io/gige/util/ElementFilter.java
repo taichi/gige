@@ -57,8 +57,7 @@ public interface ElementFilter {
 	}
 
 	public static <T extends Element> Predicate<T> fields() {
-		return contains(EnumSet
-				.of(ElementKind.FIELD, ElementKind.ENUM_CONSTANT));
+		return of(ElementKind.FIELD, ElementKind.ENUM_CONSTANT);
 	}
 
 	public static Stream<ExecutableElement> constructorsIn(TypeElement element) {
@@ -82,7 +81,7 @@ public interface ElementFilter {
 	}
 
 	public static <T extends Element> Predicate<T> constructors() {
-		return contains(EnumSet.of(ElementKind.CONSTRUCTOR));
+		return of(ElementKind.CONSTRUCTOR);
 	}
 
 	public static Stream<ExecutableElement> methodsIn(TypeElement element) {
@@ -104,7 +103,7 @@ public interface ElementFilter {
 	}
 
 	public static <T extends Element> Predicate<T> methods() {
-		return contains(EnumSet.of(ElementKind.METHOD));
+		return of(ElementKind.METHOD);
 	}
 
 	public static <T extends Element> Stream<TypeElement> typesIn(
@@ -121,7 +120,7 @@ public interface ElementFilter {
 	}
 
 	public static <T extends Element> Predicate<T> types() {
-		return contains(EnumSet.of(ElementKind.CLASS, ElementKind.ENUM,
+		return of(EnumSet.of(ElementKind.CLASS, ElementKind.ENUM,
 				ElementKind.INTERFACE, ElementKind.ANNOTATION_TYPE));
 	}
 
@@ -140,11 +139,24 @@ public interface ElementFilter {
 	}
 
 	public static <T extends Element> Predicate<T> packages() {
-		return contains(EnumSet.of(ElementKind.PACKAGE));
+		return of(ElementKind.PACKAGE);
 	}
 
-	public static <T extends Element> Predicate<T> contains(
-			Set<ElementKind> condition) {
+	public static <T extends Element> Predicate<T> of(ElementKind ek) {
+		return of(EnumSet.of(ek));
+	}
+
+	public static <T extends Element> Predicate<T> of(ElementKind ek1,
+			ElementKind ek2) {
+		return of(EnumSet.of(ek1, ek2));
+	}
+
+	public static <T extends Element> Predicate<T> of(ElementKind ek1,
+			ElementKind ek2, ElementKind ek3) {
+		return of(EnumSet.of(ek1, ek2, ek3));
+	}
+
+	public static <T extends Element> Predicate<T> of(Set<ElementKind> condition) {
 		Objects.requireNonNull(condition);
 
 		return t -> condition.contains(t.getKind());
