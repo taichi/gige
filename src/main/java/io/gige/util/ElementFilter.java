@@ -31,7 +31,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
 /**
- * replacement of javax.lang.model.util.ElementFilter.<br/>
+ * replacement of javax.lang.model.util.ElementFilter.<br>
  * this class built on Java8 Stream API.
  * 
  * @author taichi
