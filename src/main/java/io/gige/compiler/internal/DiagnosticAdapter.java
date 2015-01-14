@@ -95,11 +95,14 @@ public class DiagnosticAdapter implements Diagnostic<JavaFileObject> {
 	public String toString() {
 		StringBuilder stb = new StringBuilder();
 		stb.append(this.problem.toString());
-		stb.append(" at ");
-		stb.append(new String(this.problem.getOriginatingFileName()));
-		stb.append(" line:[");
-		stb.append(this.problem.getSourceLineNumber());
-		stb.append("]");
+		char[] filename = this.problem.getOriginatingFileName();
+		if (filename != null) {
+			stb.append(" at ");
+			stb.append(new String(filename));
+			stb.append(" line:[");
+			stb.append(this.problem.getSourceLineNumber());
+			stb.append("]");
+		}
 		return stb.toString();
 	}
 }
