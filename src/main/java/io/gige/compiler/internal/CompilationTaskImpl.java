@@ -67,8 +67,9 @@ public class CompilationTaskImpl implements CompilationTask {
 		this.problemFactory = new DefaultProblemFactory();
 		this.errorTrapper = new DiagnosticListenerWrapper(diagnosticListener);
 
-		CompilerOptions options = new CompilerOptions(parseOptions(out, argv,
-				compilationUnits));
+		Main main = parseOptions(out, argv, compilationUnits);
+		CompilerOptions options = new CompilerOptions(main.options);
+		options.verbose = main.verbose;
 		ICompilerRequestor requestor = new CompilerRequestorImpl(
 				standardManager, this.errorTrapper);
 		this.compiler = new Compiler(environment, getHandlingPolicy(), options,
@@ -86,8 +87,7 @@ public class CompilationTaskImpl implements CompilationTask {
 		this.compiler.annotationProcessorManager = this.processorManager;
 	}
 
-	@SuppressWarnings("rawtypes")
-	protected Map parseOptions(PrintWriter out, Iterable<String> argv,
+	protected Main parseOptions(PrintWriter out, Iterable<String> argv,
 			Iterable<? extends JavaFileObject> compilationUnits) {
 		Map<String, String> defaults = new HashMap<>();
 		defaults.put(CompilerOptions.OPTION_Compliance,
@@ -104,7 +104,7 @@ public class CompilationTaskImpl implements CompilationTask {
 
 		Main main = new Main(out, out, false, defaults, null);
 		main.configure(files.toArray(String[]::new));
-		return main.options;
+		return main;
 	}
 
 	protected void setTargets(
