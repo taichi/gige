@@ -93,6 +93,13 @@ public class DiagnosticAdapter implements Diagnostic<JavaFileObject> {
 
 	@Override
 	public String toString() {
-		return this.problem.toString();
+		StringBuilder stb = new StringBuilder();
+		stb.append(this.problem.toString());
+		stb.append(" at ");
+		stb.append(new String(this.problem.getOriginatingFileName()));
+		stb.append(" line:[");
+		stb.append(this.problem.getSourceLineNumber());
+		stb.append("]");
+		return stb.toString();
 	}
 }
