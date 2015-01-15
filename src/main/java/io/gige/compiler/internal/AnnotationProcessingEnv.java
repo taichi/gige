@@ -37,10 +37,12 @@ public class AnnotationProcessingEnv extends BaseProcessingEnvImpl {
 	public AnnotationProcessingEnv(JavaFileManager fileManager,
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
 			Iterable<String> options, Compiler compiler) {
+		super();
 		this._filer = new FilerImpl(fileManager, this);
 		this._messager = new MessagerImpl(this, diagnosticListener);
 		this._processorOptions = parseProcessorOptions(options);
 		this._compiler = compiler;
+		this._elementUtils = new HackElements(this);
 	}
 
 	public void setLocale(Locale locale) {
