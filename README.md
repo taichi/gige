@@ -154,7 +154,8 @@ Apache License, Version 2.0
 
 # Lean from
 
-https://github.com/seasarorg/aptina
+* https://github.com/seasarorg/aptina
+* https://github.com/google/compile-testing
 
 # Badges
 [![wercker status](https://app.wercker.com/status/b61caeec2c22ee5147590de508904961/m "wercker status")](https://app.wercker.com/project/bykey/b61caeec2c22ee5147590de508904961)
