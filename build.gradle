@@ -9,7 +9,7 @@ buildscript {
 }
 
 group = 'io.gige'
-version = "0.3.0"
+version = "0.4.0"
 
 apply plugin: 'java'
 
@@ -20,7 +20,7 @@ repositories {
 
 sourceCompatibility = targetCompatibility = 1.8
 
-tasks.withType(AbstractCompile) each { it.options.encoding = "UTF-8" }
+tasks.withType(SourceTask)*.options*.encoding = "UTF-8"
 
 test {
 	systemProperty("java.awt.headless", "true")
