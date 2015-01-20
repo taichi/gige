@@ -29,6 +29,14 @@ test {
 dependencies {
 	compile 'org.eclipse.tycho:org.eclipse.jdt.core:3.10.0.v20140604-1726'
 	compile 'org.eclipse.tycho:org.eclipse.jdt.compiler.apt:1.1.0.v20140509-1235'
+	compile('org.eclipse.core:runtime:3.10.0-v20140318-2214') {
+		exclude group: 'org.eclipse.equinox', module: 'registry'
+		exclude group: 'org.eclipse.equinox', module: 'app'
+	}
+	compile('org.eclipse.core:resources:3.3.0-v20070604') {
+		transitive= false
+	}
+	
 
 	testCompile 'org.jmockit:jmockit:1.+'
 	compile 'junit:junit:4.+'

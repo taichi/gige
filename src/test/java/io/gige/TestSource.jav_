@@ -1,0 +1,49 @@
+package io.gige;
+
+import java.util.List;
+import java.util.Map;
+
+@TestAnnotation
+public class TestSource<T> {
+
+	int aaa;
+
+	String[] bbb;
+
+	Map<String, List<Integer>> map;
+
+	public TestSource2() {
+	}
+
+	protected TestSource2(final int aaa) {
+		this.aaa = aaa;
+	}
+
+	TestSource2(final String... bbb) {
+		this.bbb = bbb;
+	}
+
+	TestSource2(Map<String, List<Integer>> map) {
+		this.map = map;
+	}
+
+	void aaa() {
+	}
+
+	void aaa(int aaa) {
+		this.aaa = aaa;
+	}
+
+	public void setAaa(final int aaa) {
+		this.aaa = aaa;
+	}
+
+	protected void setBbb(final String... bbb) {
+		this.bbb = bbb;
+	}
+
+	public static <T> TestSource2<T> of(List<Map<String, T>> ccc) {
+		return null;
+	}
+
+}
