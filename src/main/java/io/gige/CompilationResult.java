@@ -16,10 +16,6 @@
 package io.gige;
 
 import static org.junit.Assert.assertNotNull;
-import io.gige.util.ElementFilter;
-import io.gige.util.GigeTypes;
-import io.gige.util.TypeHierarchy;
-import io.gige.util.Zipper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,6 +41,11 @@ import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
+import io.gige.util.ElementFilter;
+import io.gige.util.GigeTypes;
+import io.gige.util.TypeHierarchy;
+import io.gige.util.Zipper;
+
 /**
  * @author taichi
  */
@@ -56,8 +57,7 @@ public class CompilationResult implements AutoCloseable {
 	final ProcessingEnvironment env;
 
 	public CompilationResult(boolean success, StandardJavaFileManager manager,
-			List<Diagnostic<? extends JavaFileObject>> storage,
-			ProcessingEnvironment env) {
+			List<Diagnostic<? extends JavaFileObject>> storage, ProcessingEnvironment env) {
 		this.success = success;
 		this.manager = manager;
 		this.storage = storage;
@@ -86,17 +86,14 @@ public class CompilationResult implements AutoCloseable {
 
 	public Optional<TypeElement> getTypeElement(String className) {
 		try {
-			return Optional.ofNullable(this.env.getElementUtils()
-					.getTypeElement(className));
+			return Optional.ofNullable(this.env.getElementUtils().getTypeElement(className));
 		} catch (NullPointerException e) {
 			return Optional.empty();
 		}
 	}
 
-	public Optional<VariableElement> getField(TypeElement element,
-			CharSequence name) {
-		return ElementFilter.fieldsIn(element)
-				.filter(ElementFilter.simpleName(name)).findFirst();
+	public Optional<VariableElement> getField(TypeElement element, CharSequence name) {
+		return ElementFilter.fieldsIn(element).filter(ElementFilter.simpleName(name)).findFirst();
 	}
 
 	protected Predicate<ExecutableElement> sizeFilter(int length) {
@@ -112,69 +109,48 @@ public class CompilationResult implements AutoCloseable {
 	}
 
 	public Optional<ExecutableElement> getConstructor(TypeElement element) {
-		return ElementFilter.constructorsIn(element).filter(sizeFilter(0))
+		return ElementFilter.constructorsIn(element).filter(sizeFilter(0)).findFirst();
+	}
+
+	public Optional<ExecutableElement> getConstructor(TypeElement element, Class<?>... argTypes) {
+		return ElementFilter.constructorsIn(element).filter(argsFilter(argTypes)).findFirst();
+	}
+
+	public Optional<ExecutableElement> getConstructor(TypeElement element, String... argTypes) {
+		return ElementFilter.constructorsIn(element).filter(argsFilter(argTypes)).findFirst();
+	}
+
+	public Optional<ExecutableElement> getMethod(TypeElement element, String name) {
+		return ElementFilter.methodsIn(element).filter(ElementFilter.simpleName(name)).filter(sizeFilter(0))
 				.findFirst();
 	}
 
-	public Optional<ExecutableElement> getConstructor(TypeElement element,
-			Class<?>... argTypes) {
-		return ElementFilter.constructorsIn(element)
-				.filter(argsFilter(argTypes)).findFirst();
-	}
-
-	public Optional<ExecutableElement> getConstructor(TypeElement element,
-			String... argTypes) {
-		return ElementFilter.constructorsIn(element)
-				.filter(argsFilter(argTypes)).findFirst();
-	}
-
-	public Optional<ExecutableElement> getMethod(TypeElement element,
-			String name) {
-		return ElementFilter.methodsIn(element)
-				.filter(ElementFilter.simpleName(name)).filter(sizeFilter(0))
+	public Optional<ExecutableElement> getMethod(TypeElement element, String name, Class<?>... argTypes) {
+		return ElementFilter.methodsIn(element).filter(ElementFilter.simpleName(name)).filter(argsFilter(argTypes))
 				.findFirst();
 	}
 
-	public Optional<ExecutableElement> getMethod(TypeElement element,
-			String name, Class<?>... argTypes) {
-		return ElementFilter.methodsIn(element)
-				.filter(ElementFilter.simpleName(name))
-				.filter(argsFilter(argTypes)).findFirst();
+	public Optional<ExecutableElement> getMethod(TypeElement element, String name, String... argTypes) {
+		return ElementFilter.methodsIn(element).filter(ElementFilter.simpleName(name)).filter(argsFilter(argTypes))
+				.findFirst();
 	}
 
-	public Optional<ExecutableElement> getMethod(TypeElement element,
-			String name, String... argTypes) {
-		return ElementFilter.methodsIn(element)
-				.filter(ElementFilter.simpleName(name))
-				.filter(argsFilter(argTypes)).findFirst();
-	}
-
-	/**
-	 * find method from type hierarchy
-	 */
-	public Optional<ExecutableElement> findMethod(Class<?> clazz, String name,
-			Class<?>... argTypes) {
-		return getTypeElement(clazz).flatMap(
-				te -> TypeHierarchy.of(getEnvironment(), te)
-						.flatMap(ElementFilter::methodsIn)
-						.filter(ElementFilter.simpleName(name))
-						.filter(argsFilter(argTypes)).findFirst());
+	public Optional<ExecutableElement> findMethod(Class<?> clazz, String name, Class<?>... argTypes) {
+		return getTypeElement(clazz)
+				.flatMap(te -> TypeHierarchy.of(getEnvironment(), te).flatMap(ElementFilter::methodsIn)
+						.filter(ElementFilter.simpleName(name)).filter(argsFilter(argTypes)).findFirst());
 	}
 
 	public boolean isSameTypes(ExecutableElement signature, String[] right) {
-		Stream<String> lNames = signature.getParameters().stream()
-				.map(ve -> ve.asType().toString());
-		Stream<String> rNames = Stream.of(right).map(
-				s -> s.replaceAll("\\h", ""));
+		Stream<String> lNames = signature.getParameters().stream().map(ve -> ve.asType().toString());
+		Stream<String> rNames = Stream.of(right).map(s -> s.replaceAll("\\h", ""));
 		return Zipper.of(lNames, rNames, String::equals).allMatch(is -> is);
 	}
 
 	public boolean isSameTypes(ExecutableElement signature, Class<?>[] right) {
-		Stream<TypeMirror> lTM = signature.getParameters().stream()
-				.map(Element::asType);
-		Stream<TypeMirror> rTM = Stream.of(right).map(this::getTypeElement)
-				.filter(Optional::isPresent).map(Optional::get)
-				.map(Element::asType);
+		Stream<TypeMirror> lTM = signature.getParameters().stream().map(Element::asType);
+		Stream<TypeMirror> rTM = Stream.of(right).map(this::getTypeElement).filter(Optional::isPresent)
+				.map(Optional::get).map(Element::asType);
 		return Zipper.of(lTM, rTM, this::isSameType).allMatch(is -> is);
 	}
 
@@ -194,24 +170,19 @@ public class CompilationResult implements AutoCloseable {
 		return findOutputSource(clazz.getCanonicalName());
 	}
 
-	public Optional<String> findOutputSource(String className)
-			throws IOException {
-		JavaFileObject obj = getManager().getJavaFileForInput(
-				StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE);
+	public Optional<String> findOutputSource(String className) throws IOException {
+		JavaFileObject obj = getManager().getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE);
 		return toString(obj);
 	}
 
-	public Optional<String> findOutputResource(String pkg, String filename)
-			throws IOException {
-		FileObject obj = getManager().getFileForInput(
-				StandardLocation.SOURCE_OUTPUT, pkg, filename);
+	public Optional<String> findOutputResource(String pkg, String filename) throws IOException {
+		FileObject obj = getManager().getFileForInput(StandardLocation.SOURCE_OUTPUT, pkg, filename);
 		return toString(obj);
 	}
 
-	public void assertEquals(Reader expected, String outputClassName)
-			throws IOException {
-		JavaFileObject obj = getManager().getJavaFileForInput(
-				StandardLocation.SOURCE_OUTPUT, outputClassName, Kind.SOURCE);
+	public void assertEquals(Reader expected, String outputClassName) throws IOException {
+		JavaFileObject obj = getManager().getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, outputClassName,
+				Kind.SOURCE);
 		assertNotNull(obj);
 		try (BufferedReader left = new BufferedReader(expected);
 				BufferedReader right = new BufferedReader(obj.openReader(true))) {
@@ -219,23 +190,19 @@ public class CompilationResult implements AutoCloseable {
 		}
 	}
 
-	public void assertEquals(String expectedSource, Class<?> outputClass)
-			throws IOException {
+	public void assertEquals(String expectedSource, Class<?> outputClass) throws IOException {
 		assertEquals(expectedSource, outputClass.getCanonicalName());
 	}
 
-	public void assertEquals(Path expectedSource, Class<?> outputClass)
-			throws IOException {
+	public void assertEquals(Path expectedSource, Class<?> outputClass) throws IOException {
 		assertEquals(expectedSource, outputClass.getCanonicalName());
 	}
 
-	public void assertEquals(String expectedSource, String outputClassName)
-			throws IOException {
+	public void assertEquals(String expectedSource, String outputClassName) throws IOException {
 		assertEquals(new StringReader(expectedSource), outputClassName);
 	}
 
-	public void assertEquals(Path expectedSource, String outputClassName)
-			throws IOException {
+	public void assertEquals(Path expectedSource, String outputClassName) throws IOException {
 		assertEquals(Files.newBufferedReader(expectedSource), outputClassName);
 	}
 
