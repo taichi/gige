@@ -9,7 +9,7 @@ buildscript {
 }
 
 group = 'io.gige'
-version = "0.4.0"
+version = "0.4.1"
 
 apply plugin: 'java'
 
@@ -27,8 +27,8 @@ test {
 }
 
 dependencies {
-	compile 'org.eclipse.tycho:org.eclipse.jdt.core:3.10.0.v20140604-1726'
-	compile 'org.eclipse.tycho:org.eclipse.jdt.compiler.apt:1.1.0.v20140509-1235'
+	compile 'org.eclipse.tycho:org.eclipse.jdt.core:3.11.1.v20150902-1521'
+	compile 'org.eclipse.tycho:org.eclipse.jdt.compiler.apt:1.2.0.v20150514-0146'
 
 	testCompile 'org.jmockit:jmockit:1.+'
 	compile 'junit:junit:4.+'
