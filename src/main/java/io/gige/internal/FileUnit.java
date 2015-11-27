@@ -15,8 +15,7 @@
  */
 package io.gige.internal;
 
-import io.gige.Unit;
-
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
@@ -24,6 +23,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
+
+import io.gige.Unit;
 
 /**
  * @author taichi
@@ -38,8 +39,12 @@ public class FileUnit implements Unit {
 	@Override
 	public JavaFileObject apply(StandardJavaFileManager t) {
 		try {
-			return t.getJavaFileForInput(StandardLocation.SOURCE_PATH,
-					className, Kind.SOURCE);
+			JavaFileObject jfo = t.getJavaFileForInput(
+					StandardLocation.SOURCE_PATH, this.className, Kind.SOURCE);
+			if (jfo == null) {
+				throw new FileNotFoundException(this.className);
+			}
+			return jfo;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
