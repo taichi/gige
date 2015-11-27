@@ -80,8 +80,12 @@ public class CompilationTaskImpl implements CompilationTask {
 				null) {
 			@Override
 			public void reset() {
-				// do nothing....
 				// for OnTheFlyUnit
+			}
+
+			@Override
+			public boolean shouldCleanup(int index) {
+				return false;
 			}
 		};
 
