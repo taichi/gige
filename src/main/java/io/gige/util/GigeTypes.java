@@ -34,6 +34,7 @@ import javax.lang.model.util.SimpleElementVisitor8;
 public class GigeTypes {
 
 	static final Map<String, TypeKind> primitives;
+
 	static {
 		final Map<String, TypeKind> map = new HashMap<>();
 		map.put(void.class.getName(), TypeKind.VOID);
@@ -92,13 +93,14 @@ public class GigeTypes {
 		return componentType.map(tm -> env.getTypeUtils().getArrayType(tm));
 	}
 
-	public static boolean isSameType(ProcessingEnvironment env,
-			TypeMirror left, TypeMirror right) {
+	public static boolean isSameType(ProcessingEnvironment env, TypeMirror left,
+			TypeMirror right) {
 		Objects.requireNonNull(left);
 		Objects.requireNonNull(right);
 		Objects.requireNonNull(env);
 
-		if (left.getKind() == TypeKind.NONE || right.getKind() == TypeKind.NONE) {
+		if (left.getKind() == TypeKind.NONE
+				|| right.getKind() == TypeKind.NONE) {
 			return false;
 		}
 		if (left.getKind() == TypeKind.NULL) {

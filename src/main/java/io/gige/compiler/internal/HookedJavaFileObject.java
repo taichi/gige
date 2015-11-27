@@ -31,8 +31,8 @@ import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
  * OutputStream objects that it produces, and notifies the annotation dispatch
  * manager when a new compilation unit is produced.
  */
-public class HookedJavaFileObject extends
-		ForwardingJavaFileObject<JavaFileObject> {
+public class HookedJavaFileObject
+		extends ForwardingJavaFileObject<JavaFileObject> {
 	// A delegating Writer that passes all commands to its contained Writer,
 	// but hooks close() to notify the annotation dispatch manager of the new
 	// unit.
@@ -264,9 +264,10 @@ public class HookedJavaFileObject extends
 					 * ReferenceBinding's, so adding a SourceTypeBinding works
 					 * just fine.
 					 */
-					ReferenceBinding type = this._filer._env.getCompiler().lookupEnvironment
-							.getType(CharOperation.splitOn('.',
-									_typeName.toCharArray()));
+					ReferenceBinding type = this._filer._env
+							.getCompiler().lookupEnvironment
+									.getType(CharOperation.splitOn('.',
+											_typeName.toCharArray()));
 					if (type != null)
 						_filer.addNewClassFile(type);
 				} catch (IOException e) {
@@ -274,16 +275,17 @@ public class HookedJavaFileObject extends
 				}
 				if (binaryType != null) {
 					char[] name = binaryType.getName();
-					ReferenceBinding type = this._filer._env.getCompiler().lookupEnvironment
-							.getType(CharOperation.splitOn('/', name));
+					ReferenceBinding type = this._filer._env
+							.getCompiler().lookupEnvironment
+									.getType(CharOperation.splitOn('/', name));
 					if (type != null && type.isValidBinding()) {
 						if (type.isBinaryBinding()) {
 							_filer.addNewClassFile(type);
 						} else {
 							BinaryTypeBinding binaryBinding = new BinaryTypeBinding(
-									type.getPackage(),
-									binaryType,
-									this._filer._env.getCompiler().lookupEnvironment,
+									type.getPackage(), binaryType,
+									this._filer._env
+											.getCompiler().lookupEnvironment,
 									true);
 							if (binaryBinding != null)
 								_filer.addNewClassFile(binaryBinding);

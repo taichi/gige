@@ -26,8 +26,8 @@ import javax.tools.StandardJavaFileManager;
 /**
  * @author taichi
  */
-public interface Unit extends
-		Function<StandardJavaFileManager, JavaFileObject> {
+public interface Unit
+		extends Function<StandardJavaFileManager, JavaFileObject> {
 
 	static Unit of(String className) {
 		return new FileUnit(className);

@@ -48,7 +48,8 @@ public class CompilerContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.context.set(Locale.JAPANESE)
+		this.context
+				.set(Locale.JAPANESE)
 				.setSourcePath("src/test/java", "src/test/resources")
 				.set(diag -> System.out.println(diag))
 				.setUnits(TestSource.class);
@@ -113,18 +114,23 @@ public class CompilerContextTest {
 		assertEquals(Diagnostic.Kind.ERROR, msgs.get(1).getKind());
 		assertEquals(Diagnostic.Kind.WARNING, msgs.get(2).getKind());
 
-		Optional<Diagnostic<? extends JavaFileObject>> clz = msgs.stream()
-				.filter(Diagnostics.filter(TestSource.class)).findFirst();
+		Optional<Diagnostic<? extends JavaFileObject>> clz = msgs
+				.stream()
+				.filter(Diagnostics.filter(TestSource.class))
+				.findFirst();
 		assertTrue(clz.isPresent());
 
-		Optional<Diagnostic<? extends JavaFileObject>> note = msgs.stream()
-				.filter(Diagnostics.filter(Kind.NOTE)).findFirst();
+		Optional<Diagnostic<? extends JavaFileObject>> note = msgs
+				.stream()
+				.filter(Diagnostics.filter(Kind.NOTE))
+				.findFirst();
 		assertTrue(note.isPresent());
 
 		Optional<Diagnostic<? extends JavaFileObject>> and = msgs
 				.stream()
 				.filter(Diagnostics.filter(TestSource.class).and(
-						Diagnostics.filter(Kind.ERROR))).findFirst();
+						Diagnostics.filter(Kind.ERROR)))
+				.findFirst();
 		assertTrue(and.isPresent());
 	}
 
@@ -133,15 +139,16 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 
-		Stream.of("aaa", "bbb", "ccc").forEach(
-				name -> {
-					VariableElement field = result.getField(element, name)
-							.orElseThrow(AssertionError::new);
-					assertEquals(name, field.getSimpleName().toString());
-				});
+		Stream.of("aaa", "bbb", "ccc").forEach(name -> {
+			VariableElement field = result
+					.getField(element, name)
+					.orElseThrow(AssertionError::new);
+			assertEquals(name, field.getSimpleName().toString());
+		});
 
 		Optional<VariableElement> field = result.getField(element, "zzz");
 		assertFalse(field.isPresent());
@@ -152,7 +159,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 
 		Optional<ExecutableElement> defc = result.getConstructor(element);
@@ -164,7 +172,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> ctr = result.getConstructor(element,
 				Object.class);
@@ -180,14 +189,15 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> ctr = result.getConstructor(element,
 				int.class);
 		assertTrue(ctr.isPresent());
 
-		Optional<ExecutableElement> ctr2 = result
-				.getConstructor(element, "int");
+		Optional<ExecutableElement> ctr2 = result.getConstructor(element,
+				"int");
 		assertTrue(ctr2.isPresent());
 	}
 
@@ -196,7 +206,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> ctr = result.getConstructor(element,
 				String[].class);
@@ -212,7 +223,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> ctr = result.getConstructor(element,
 				List.class);
@@ -228,7 +240,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 
 		Optional<ExecutableElement> mtd = result.getMethod(element, "aaa");
@@ -240,7 +253,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> ctr = result.getMethod(element, "aaa",
 				Object.class);
@@ -256,7 +270,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 
 		Optional<ExecutableElement> mtd = result.getMethod(element, "aaa",
@@ -273,7 +288,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> mtd = result.getMethod(element, "setBbb",
 				String[].class);
@@ -289,7 +305,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 		Optional<ExecutableElement> mtd = result.getMethod(element, "setCcc",
 				List.class);
@@ -305,7 +322,8 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		TypeElement element = result.getTypeElement(TestSource.class)
+		TypeElement element = result
+				.getTypeElement(TestSource.class)
 				.orElseThrow(AssertionError::new);
 
 		Optional<ExecutableElement> mtd = result.getMethod(element, "of",
@@ -318,10 +336,10 @@ public class CompilerContextTest {
 		CompilationResult result = this.context.compile();
 		assertTrue(result.success());
 
-		assertEquals("boolean", result.getTypeMirror(boolean.class).get()
-				.toString());
-		assertEquals("int[]", result.getTypeMirror(int[].class).get()
-				.toString());
+		assertEquals("boolean",
+				result.getTypeMirror(boolean.class).get().toString());
+		assertEquals("int[]",
+				result.getTypeMirror(int[].class).get().toString());
 		assertEquals("java.lang.String[][]",
 				result.getTypeMirror(String[][].class).get().toString());
 

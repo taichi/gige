@@ -35,13 +35,22 @@ public class ClasspathContainer extends FileSystem {
 		super(paths, null, true);
 	}
 
-	public static FileSystem configure(StandardJavaFileManager standardManager) {
+	public static FileSystem configure(
+			StandardJavaFileManager standardManager) {
 		Classpath[] paths = Arrays
-				.asList(StandardLocation.PLATFORM_CLASS_PATH, StandardLocation.SOURCE_PATH,
-						StandardLocation.SOURCE_OUTPUT, StandardLocation.CLASS_PATH)
-				.stream().map(loc -> Optional.ofNullable(standardManager.getLocation(loc))).filter(Optional::isPresent)
-				.map(Optional::get).<File> flatMap(files -> stream(files.spliterator(), false))
-				.map(file -> FileSystem.getClasspath(file.getAbsolutePath(), null, null)).filter(cp -> cp != null)
+				.asList(StandardLocation.PLATFORM_CLASS_PATH,
+						StandardLocation.SOURCE_PATH,
+						StandardLocation.SOURCE_OUTPUT,
+						StandardLocation.CLASS_PATH)
+				.stream()
+				.map(loc -> Optional
+						.ofNullable(standardManager.getLocation(loc)))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.<File> flatMap(files -> stream(files.spliterator(), false))
+				.map(file -> FileSystem.getClasspath(file.getAbsolutePath(),
+						null, null))
+				.filter(cp -> cp != null)
 				.toArray(Classpath[]::new);
 		return new ClasspathContainer(paths);
 	}

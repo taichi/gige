@@ -49,7 +49,8 @@ public class UseParameterized {
 	@Before
 	public void setUp() {
 		this.context = new CompilerContext(this.type);
-		this.context.setSourcePath("src/test/java", "src/test/resources")
+		this.context
+				.setSourcePath("src/test/java", "src/test/resources")
 				.set(diag -> System.out.println(diag))
 				.setUnits(TestSource.class);
 	}

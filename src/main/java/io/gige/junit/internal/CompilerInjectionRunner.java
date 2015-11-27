@@ -79,8 +79,8 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
 
 	protected void handleCompilerFields(ExceptionalConsumer<Field> fn)
 			throws Exception {
-		List<FrameworkField> fields = getTestClass().getAnnotatedFields(
-				io.gige.Compilers.class);
+		List<FrameworkField> fields = getTestClass()
+				.getAnnotatedFields(io.gige.Compilers.class);
 		for (FrameworkField ff : fields) {
 			Field f = ff.getField();
 			f.setAccessible(true);

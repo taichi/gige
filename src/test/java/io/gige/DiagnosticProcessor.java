@@ -49,10 +49,11 @@ public class DiagnosticProcessor extends AbstractProcessor {
 
 		annotations
 				.stream()
-				.flatMap(
-						a -> ElementFilter.typesIn(
-								env.getElementsAnnotatedWith(a)).stream())
-				.forEach(t -> {
+				.flatMap(a -> ElementFilter
+						.typesIn(env.getElementsAnnotatedWith(a))
+						.stream())
+				.forEach(t ->
+		{
 					messager.printMessage(Kind.ERROR, "ERROR message", t);
 					messager.printMessage(Kind.WARNING, "WARNING message", t);
 				});

@@ -31,8 +31,8 @@ public interface Asserts {
 	static void assertEqualsByLine(final String expected, final String actual) {
 		try (BufferedReader left = new BufferedReader(
 				new StringReader(expected));
-				BufferedReader right = new BufferedReader(new StringReader(
-						actual))) {
+				BufferedReader right = new BufferedReader(
+						new StringReader(actual))) {
 			assertEqualsByLine(left, right);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

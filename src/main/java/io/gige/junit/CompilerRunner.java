@@ -55,9 +55,12 @@ public class CompilerRunner extends Suite {
 						"annotated field must be io.gige.CompilerContext.");
 			}
 		}
-		return fields.stream().map(FrameworkField::getField)
+		return fields
+				.stream()
+				.map(FrameworkField::getField)
 				.map(f -> f.getAnnotation(Compilers.class))
-				.flatMap(c -> Stream.of(c.value())).distinct()
+				.flatMap(c -> Stream.of(c.value()))
+				.distinct()
 				.map(t -> CompilerInjectionRunner.safeRunnerForClass(clazz, t))
 				.collect(Collectors.toList());
 	}

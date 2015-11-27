@@ -26,8 +26,8 @@ import javax.tools.JavaFileObject;
 /**
  * @author taichi
  */
-public class CompositeDiagnosticListener implements
-		DiagnosticListener<JavaFileObject> {
+public class CompositeDiagnosticListener
+		implements DiagnosticListener<JavaFileObject> {
 
 	final List<DiagnosticListener<JavaFileObject>> listeners;
 

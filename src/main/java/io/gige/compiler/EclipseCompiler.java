@@ -54,9 +54,11 @@ public class EclipseCompiler implements JavaCompiler {
 	FileSystem filesystem;
 
 	@Override
-	public CompilationTask getTask(Writer out, JavaFileManager fileManager,
+	public CompilationTask getTask(Writer out,
+			JavaFileManager fileManager,
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Iterable<String> options, Iterable<String> classes,
+			Iterable<String> options,
+			Iterable<String> classes,
 			Iterable<? extends JavaFileObject> compilationUnits) {
 
 		for (Iterator<String> i = options.iterator(); i.hasNext();) {
@@ -67,14 +69,16 @@ public class EclipseCompiler implements JavaCompiler {
 				: new PrintWriter(out);
 		CompilationTaskImpl task = new CompilationTaskImpl();
 		task.configure(pw, fileManager, this.provided, this.filesystem,
-				diagnosticListener, options, classes, compilationUnits);
+				diagnosticListener, options, classes,
+				compilationUnits);
 		return task;
 	}
 
 	@Override
 	public StandardJavaFileManager getStandardFileManager(
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Locale locale, Charset charset) {
+			Locale locale,
+			Charset charset) {
 		if (this.provided == null) {
 			this.provided = newFileManager(locale, charset);
 			this.filesystem = ClasspathContainer.configure(this.provided);

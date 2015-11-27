@@ -69,8 +69,8 @@ public class CompilerRequestorImpl implements ICompilerRequestor {
 	}
 
 	protected void report(Kind kind, CategorizedProblem[] problems) {
-		Stream.of(problems).map(p -> new DiagnosticAdapter(kind, p))
-				.forEach(diagnosticListener::report);
+		Stream.of(problems).map(p -> new DiagnosticAdapter(kind, p)).forEach(
+				diagnosticListener::report);
 	}
 
 }

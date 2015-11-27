@@ -15,8 +15,6 @@
  */
 package io.gige.internal;
 
-import io.gige.Unit;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
@@ -26,6 +24,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
+
+import io.gige.Unit;
 
 /**
  * @author taichi

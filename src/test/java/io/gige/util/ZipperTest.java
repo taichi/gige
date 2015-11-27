@@ -30,10 +30,12 @@ public class ZipperTest {
 
 	@Test
 	public void same() {
-		List<String> zipped = Zipper.of(Stream.of(1, 2, 3),
-				Stream.of(10, 20, 30), (l, r) -> {
+		List<String> zipped = Zipper
+				.of(Stream.of(1, 2, 3), Stream.of(10, 20, 30), (l, r) ->
+		{
 					return l + " " + r;
-				}).collect(Collectors.toList());
+				})
+				.collect(Collectors.toList());
 		assertEquals("1 10", zipped.get(0));
 		assertEquals("2 20", zipped.get(1));
 		assertEquals("3 30", zipped.get(2));
@@ -41,20 +43,24 @@ public class ZipperTest {
 
 	@Test
 	public void leftMin() throws Exception {
-		List<String> zipped = Zipper.of(Stream.of(1, 2), Stream.of(10, 20, 30),
-				(l, r) -> {
+		List<String> zipped = Zipper
+				.of(Stream.of(1, 2), Stream.of(10, 20, 30), (l, r) ->
+		{
 					return l + " " + r;
-				}).collect(Collectors.toList());
+				})
+				.collect(Collectors.toList());
 		assertEquals("1 10", zipped.get(0));
 		assertEquals("2 20", zipped.get(1));
 	}
 
 	@Test
 	public void rightMin() throws Exception {
-		List<String> zipped = Zipper.of(Stream.of(1, 2, 3), Stream.of(10, 20),
-				(l, r) -> {
+		List<String> zipped = Zipper
+				.of(Stream.of(1, 2, 3), Stream.of(10, 20), (l, r) ->
+		{
 					return l + " " + r;
-				}).collect(Collectors.toList());
+				})
+				.collect(Collectors.toList());
 		assertEquals("1 10", zipped.get(0));
 		assertEquals("2 20", zipped.get(1));
 	}

@@ -25,7 +25,8 @@ import javax.tools.JavaFileObject;
  */
 public interface Diagnostics {
 
-	static Predicate<Diagnostic<? extends JavaFileObject>> filter(Class<?> clazz) {
+	static Predicate<Diagnostic<? extends JavaFileObject>> filter(
+			Class<?> clazz) {
 		return filter(clazz.getCanonicalName());
 	}
 

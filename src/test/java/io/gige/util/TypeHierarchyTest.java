@@ -44,20 +44,25 @@ public class TypeHierarchyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.context.set(Locale.JAPANESE).setSourcePath("src/test/java")
+		this.context
+				.set(Locale.JAPANESE)
+				.setSourcePath("src/test/java")
 				.setUnits(TestSource.class)
-				.set(diag -> System.out.println(diag));
+				.set(
+						diag -> System.out.println(diag));
 	}
 
 	@Test
 	public void test() throws Exception {
 		CompilationResult result = this.context.compile();
 
-		TypeElement element = result.getTypeElement(HashMap.class).orElseThrow(
-				AssertionError::new);
+		TypeElement element = result
+				.getTypeElement(HashMap.class)
+				.orElseThrow(AssertionError::new);
 		Stream<String> actual = TypeHierarchy
 				.of(result.getEnvironment(), element)
-				.map(TypeElement::getQualifiedName).map(Name::toString);
+				.map(TypeElement::getQualifiedName)
+				.map(Name::toString);
 		Stream<String> expected = Stream.of("java.util.HashMap",
 				"java.util.AbstractMap", "java.lang.Object");
 		Zipper.of(expected, actual, (l, r) -> {

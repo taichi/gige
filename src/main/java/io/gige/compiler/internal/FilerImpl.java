@@ -81,22 +81,22 @@ public class FilerImpl implements Filer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * javax.annotation.processing.Filer#createResource(javax.tools.JavaFileManager
-	 * .Location, java.lang.CharSequence, java.lang.CharSequence,
-	 * javax.lang.model.element.Element[])
+	 * @see javax.annotation.processing.Filer#createResource(javax.tools.
+	 * JavaFileManager .Location, java.lang.CharSequence,
+	 * java.lang.CharSequence, javax.lang.model.element.Element[])
 	 */
 	@Override
-	public FileObject createResource(Location location, CharSequence pkg,
-			CharSequence relativeName, Element... originatingElements)
-			throws IOException {
+	public FileObject createResource(Location location,
+			CharSequence pkg,
+			CharSequence relativeName,
+			Element... originatingElements) throws IOException {
 		validateName(relativeName);
 		FileObject fo = _fileManager.getFileForOutput(location, pkg.toString(),
 				relativeName.toString(), null);
 		URI uri = fo.toUri();
 		if (_createdFiles.contains(uri)) {
-			throw new FilerException(
-					"Resource already created : " + location + '/' + pkg + '/' + relativeName); //$NON-NLS-1$
+			throw new FilerException("Resource already created : " + location //$NON-NLS-1$
+					+ '/' + pkg + '/' + relativeName);
 		}
 
 		_createdFiles.add(uri);
@@ -121,8 +121,8 @@ public class FilerImpl implements Filer {
 			switch (path.charAt(i)) {
 			case '/':
 				if (hasDot) {
-					throw new IllegalArgumentException(
-							"relative name " + relativeName + " is not relative"); //$NON-NLS-1$ //$NON-NLS-2$
+					throw new IllegalArgumentException("relative name " //$NON-NLS-1$
+							+ relativeName + " is not relative"); //$NON-NLS-1$
 				}
 				break;
 			case '.':
@@ -184,13 +184,13 @@ public class FilerImpl implements Filer {
 		}
 
 		if (fo == null) {
-			throw new FileNotFoundException(
-					"Resource does not exist : " + location + '/' + pkg + '/' + relativeName); //$NON-NLS-1$
+			throw new FileNotFoundException("Resource does not exist : " //$NON-NLS-1$
+					+ location + '/' + pkg + '/' + relativeName);
 		}
 		URI uri = fo.toUri();
 		if (_createdFiles.contains(uri)) {
-			throw new FilerException(
-					"Resource already created : " + location + '/' + pkg + '/' + relativeName); //$NON-NLS-1$
+			throw new FilerException("Resource already created : " + location //$NON-NLS-1$
+					+ '/' + pkg + '/' + relativeName);
 		}
 
 		_createdFiles.add(uri);

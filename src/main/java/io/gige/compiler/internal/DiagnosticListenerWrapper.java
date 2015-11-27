@@ -23,8 +23,8 @@ import javax.tools.JavaFileObject;
 /**
  * @author taichi
  */
-public class DiagnosticListenerWrapper implements
-		DiagnosticListener<JavaFileObject> {
+public class DiagnosticListenerWrapper
+		implements DiagnosticListener<JavaFileObject> {
 
 	final DiagnosticListener<? super JavaFileObject> delegate;
 	boolean hasError = false;

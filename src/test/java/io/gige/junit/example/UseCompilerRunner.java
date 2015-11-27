@@ -38,7 +38,8 @@ public class UseCompilerRunner {
 	@Before
 	public void setUp() {
 		// CompilerRunner close CompilerContext automatically.
-		this.context.setSourcePath("src/test/java", "src/test/resources")
+		this.context
+				.setSourcePath("src/test/java", "src/test/resources")
 				.set(diag -> System.out.println(diag))
 				.setUnits(TestSource.class);
 	}

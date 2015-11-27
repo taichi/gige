@@ -58,10 +58,13 @@ public class CompilationTaskImpl implements CompilationTask {
 	Compiler compiler = null;
 	ICompilationUnit[] targets;
 
-	public void configure(PrintWriter out, JavaFileManager fileManager,
-			StandardJavaFileManager standardManager, FileSystem environment,
+	public void configure(PrintWriter out,
+			JavaFileManager fileManager,
+			StandardJavaFileManager standardManager,
+			FileSystem environment,
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Iterable<String> argv, Iterable<String> classes,
+			Iterable<String> argv,
+			Iterable<String> classes,
 			Iterable<? extends JavaFileObject> compilationUnits) {
 
 		this.problemFactory = new DefaultProblemFactory();
@@ -94,20 +97,21 @@ public class CompilationTaskImpl implements CompilationTask {
 		this.compiler.annotationProcessorManager = this.processorManager;
 	}
 
-	protected Main parseOptions(PrintWriter out, Iterable<String> argv,
+	protected Main parseOptions(PrintWriter out,
+			Iterable<String> argv,
 			Iterable<? extends JavaFileObject> compilationUnits) {
 		Map<String, String> defaults = new HashMap<>();
 		defaults.put(CompilerOptions.OPTION_Compliance,
 				CompilerOptions.VERSION_1_8);
-		defaults.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8);
+		defaults.put(CompilerOptions.OPTION_Source,
+				CompilerOptions.VERSION_1_8);
 		defaults.put(CompilerOptions.OPTION_TargetPlatform,
 				CompilerOptions.VERSION_1_8);
 
-		Stream<String> files = Stream.concat(
-				stream(argv.spliterator(), false),
-				stream(compilationUnits.spliterator(), false).map(
-						JavaFileObject::toUri).map(
-						uri -> new File(uri).getAbsolutePath()));
+		Stream<String> files = Stream.concat(stream(argv.spliterator(), false),
+				stream(compilationUnits.spliterator(), false)
+						.map(JavaFileObject::toUri)
+						.map(uri -> new File(uri).getAbsolutePath()));
 
 		Main main = new Main(out, out, false, defaults, null);
 		main.configure(files.toArray(String[]::new));
@@ -122,13 +126,16 @@ public class CompilationTaskImpl implements CompilationTask {
 					@Override
 					public char[] getContents() {
 						try {
-							return file.getCharContent(true).toString()
+							return file
+									.getCharContent(true)
+									.toString()
 									.toCharArray();
 						} catch (IOException e) {
 							throw new AbortCompilationUnit(null, e, null);
 						}
 					}
-				}).toArray(ICompilationUnit[]::new);
+				})
+				.toArray(ICompilationUnit[]::new);
 	}
 
 	@Override
@@ -142,8 +149,9 @@ public class CompilationTaskImpl implements CompilationTask {
 
 	@Override
 	public void setProcessors(Iterable<? extends Processor> processors) {
-		this.processorManager.setProcessors(stream(processors.spliterator(),
-				false).toArray(Processor[]::new));
+		this.processorManager
+				.setProcessors(stream(processors.spliterator(), false)
+						.toArray(Processor[]::new));
 	}
 
 	protected IErrorHandlingPolicy getHandlingPolicy() {

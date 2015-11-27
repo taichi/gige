@@ -36,7 +36,8 @@ public class AnnotationProcessingEnv extends BaseProcessingEnvImpl {
 
 	public AnnotationProcessingEnv(JavaFileManager fileManager,
 			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Iterable<String> options, Compiler compiler) {
+			Iterable<String> options,
+			Compiler compiler) {
 		super();
 		this._filer = new FilerImpl(fileManager, this);
 		this._messager = new MessagerImpl(this, diagnosticListener);
@@ -75,7 +76,8 @@ public class AnnotationProcessingEnv extends BaseProcessingEnvImpl {
 				options.put(arg.substring(2), null);
 			} else {
 				// value and key
-				options.put(arg.substring(2, equals), arg.substring(equals + 1));
+				options.put(arg.substring(2, equals),
+						arg.substring(equals + 1));
 			}
 		}
 		return options;

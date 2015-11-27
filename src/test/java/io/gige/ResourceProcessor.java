@@ -51,7 +51,12 @@ public class ResourceProcessor extends AbstractProcessor {
 
 		try {
 			FileObject fo = filer.getResource(StandardLocation.CLASS_OUTPUT,
-					"aaa", // jdk compiler needs legal package name.
+					"aaa", // jdk
+							// compiler
+							// needs
+							// legal
+							// package
+							// name.
 					"META-INF/foo.txt");
 			this.found = fo != null;
 		} catch (IOException e) {

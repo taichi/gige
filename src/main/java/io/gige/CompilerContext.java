@@ -18,8 +18,6 @@ package io.gige;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.gige.internal.CompositeDiagnosticListener;
-import io.gige.internal.ResourceProxyJavaFileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +52,9 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import org.junit.Assert;
+
+import io.gige.internal.CompositeDiagnosticListener;
+import io.gige.internal.ResourceProxyJavaFileManager;
 
 /**
  * @author taichi
@@ -91,8 +92,8 @@ public class CompilerContext implements AutoCloseable {
 	public CompilerContext(Supplier<JavaCompiler> provider) {
 		assertNotNull(provider);
 		this.provider = provider;
-		classOutputs = sourceOutputs = Arrays.asList(new File(".gige", provider
-				.toString()));
+		classOutputs = sourceOutputs = Arrays
+				.asList(new File(".gige", provider.toString()));
 	}
 
 	public CompilerContext set(Processor... processors) {
@@ -118,8 +119,11 @@ public class CompilerContext implements AutoCloseable {
 	public CompilerContext setUnits(String... units) {
 		assertNotNull(units);
 		assertTrue(0 < units.length);
-		this.units = Stream.of(units).filter(s -> s.isEmpty() == false)
-				.map(Unit::of).collect(Collectors.toList());
+		this.units = Stream
+				.of(units)
+				.filter(s -> s.isEmpty() == false)
+				.map(Unit::of)
+				.collect(Collectors.toList());
 		assertFalse(this.units.isEmpty());
 		return this;
 	}
@@ -127,7 +131,9 @@ public class CompilerContext implements AutoCloseable {
 	public CompilerContext setUnits(Class<?>... units) {
 		assertNotNull(units);
 		assertTrue(0 < units.length);
-		this.units = Stream.of(units).map(Unit::of)
+		this.units = Stream
+				.of(units)
+				.map(Unit::of)
 				.collect(Collectors.toList());
 		assertFalse(this.units.isEmpty());
 		return this;
@@ -184,8 +190,11 @@ public class CompilerContext implements AutoCloseable {
 	}
 
 	protected List<File> toFiles(String... paths) {
-		List<File> files = Stream.of(paths).filter(s -> s.isEmpty() == false)
-				.map(File::new).collect(Collectors.toList());
+		List<File> files = Stream
+				.of(paths)
+				.filter(s -> s.isEmpty() == false)
+				.map(File::new)
+				.collect(Collectors.toList());
 		assertTrue(0 < files.size());
 		return files;
 	}
@@ -243,16 +252,19 @@ public class CompilerContext implements AutoCloseable {
 				getLocale(), getCharset());
 		manager.setLocation(StandardLocation.SOURCE_PATH, this.sourcePaths);
 
-		Stream.of(classOutputs, sourceOutputs).flatMap(List::stream)
-				.filter(f -> f.exists() == false).forEach(f -> f.mkdirs());
+		Stream
+				.of(classOutputs, sourceOutputs)
+				.flatMap(List::stream)
+				.filter(f -> f.exists() == false)
+				.forEach(
+						f -> f.mkdirs());
 		manager.setLocation(StandardLocation.CLASS_OUTPUT, classOutputs);
 		manager.setLocation(StandardLocation.SOURCE_OUTPUT, sourceOutputs);
 		this.managers.add(manager);
 
 		CompilationTask task = compiler.getTask(this.getOut(), wrap(manager),
-				dl, this.options, Collections.emptyList(), this.units.stream()
-						.map(t -> t.apply(manager))
-						.collect(Collectors.toList()));
+				dl, this.options, Collections.emptyList(),
+				map(manager, this.units));
 		task.setLocale(getLocale());
 
 		return newResult(dl.getDiagnostics(), manager, processors, task);
@@ -263,9 +275,16 @@ public class CompilerContext implements AutoCloseable {
 		return new ResourceProxyJavaFileManager(manager);
 	}
 
+	protected List<JavaFileObject> map(StandardJavaFileManager manager,
+			List<Unit> units) {
+		return units.stream().map(t -> t.apply(manager)).collect(
+				Collectors.toList());
+	}
+
 	protected CompilationResult newResult(
 			List<Diagnostic<? extends JavaFileObject>> storage,
-			StandardJavaFileManager manager, List<Processor> processors,
+			StandardJavaFileManager manager,
+			List<Processor> processors,
 			CompilationTask task) {
 		List<Processor> list = new ArrayList<>();
 		EnvProcessor env = new EnvProcessor();

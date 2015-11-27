@@ -27,8 +27,8 @@ import javax.tools.StandardLocation;
 /**
  * @author taichi
  */
-public class ResourceProxyJavaFileManager extends
-		ForwardingJavaFileManager<StandardJavaFileManager> {
+public class ResourceProxyJavaFileManager
+		extends ForwardingJavaFileManager<StandardJavaFileManager> {
 
 	public ResourceProxyJavaFileManager(StandardJavaFileManager fileManager) {
 		super(fileManager);
@@ -48,7 +48,8 @@ public class ResourceProxyJavaFileManager extends
 			String relativeName) throws IOException {
 		if (location == StandardLocation.CLASS_OUTPUT) {
 			for (StandardLocation sl : Arrays.asList(
-					StandardLocation.SOURCE_PATH, StandardLocation.CLASS_PATH)) {
+					StandardLocation.SOURCE_PATH,
+					StandardLocation.CLASS_PATH)) {
 				try {
 					FileObject fo = super.getFileForInput(sl, packageName,
 							relativeName);
@@ -64,7 +65,8 @@ public class ResourceProxyJavaFileManager extends
 
 	@Override
 	public FileObject getFileForOutput(Location location, String packageName,
-			String relativeName, FileObject sibling) throws IOException {
+			String relativeName, FileObject sibling)
+					throws IOException {
 		FileObject fo = findFromInput(location, packageName, relativeName);
 		if (fo == null) {
 			fo = super.getFileForOutput(location, packageName, relativeName,

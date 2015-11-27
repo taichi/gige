@@ -36,8 +36,8 @@ public class UseTheories {
 	public static Compilers.Type[] jdk = Compilers.Type.values();
 
 	CompilerContext setUp(CompilerContext context) {
-		return context.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag));
+		return context.setSourcePath("src/test/java", "src/test/resources").set(
+				diag -> System.out.println(diag));
 	}
 
 	@Theory
@@ -45,7 +45,8 @@ public class UseTheories {
 		// you must release external resources
 		try (CompilerContext context = new CompilerContext(type)) {
 			CompilationResult result = setUp(context)
-					.setUnits(TestSource.class).compile();
+					.setUnits(TestSource.class)
+					.compile();
 			assertTrue(result.success());
 		}
 	}

@@ -60,7 +60,8 @@ public interface ElementFilter {
 		return of(ElementKind.FIELD, ElementKind.ENUM_CONSTANT);
 	}
 
-	public static Stream<ExecutableElement> constructorsIn(TypeElement element) {
+	public static Stream<ExecutableElement> constructorsIn(
+			TypeElement element) {
 		return constructorsIn(element.getEnclosedElements());
 	}
 
@@ -68,16 +69,17 @@ public interface ElementFilter {
 			Iterable<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return constructorsIn(StreamSupport.stream(elements.spliterator(),
-				false));
+		return constructorsIn(
+				StreamSupport.stream(elements.spliterator(), false));
 	}
 
 	public static <T extends Element> Stream<ExecutableElement> constructorsIn(
 			Stream<T> elements) {
 		Objects.requireNonNull(elements);
 
-		return elements.filter(constructors()).map(
-				ExecutableElement.class::cast);
+		return elements
+				.filter(constructors())
+				.map(ExecutableElement.class::cast);
 	}
 
 	public static <T extends Element> Predicate<T> constructors() {
@@ -156,13 +158,15 @@ public interface ElementFilter {
 		return of(EnumSet.of(ek1, ek2, ek3));
 	}
 
-	public static <T extends Element> Predicate<T> of(Set<ElementKind> condition) {
+	public static <T extends Element> Predicate<T> of(
+			Set<ElementKind> condition) {
 		Objects.requireNonNull(condition);
 
 		return t -> condition.contains(t.getKind());
 	}
 
-	public static <T extends Element> Predicate<T> simpleName(CharSequence name) {
+	public static <T extends Element> Predicate<T> simpleName(
+			CharSequence name) {
 		Objects.requireNonNull(name);
 
 		return t -> t.getSimpleName().contentEquals(name);

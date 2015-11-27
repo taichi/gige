@@ -54,8 +54,8 @@ class HackElements extends ElementsImpl {
 	@Override
 	public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
 			AnnotationMirror a) {
-		Map<? extends ExecutableElement, ? extends AnnotationValue> map = super
-				.getElementValuesWithDefaults(a);
+		Map<? extends ExecutableElement, ? extends AnnotationValue> map = super.getElementValuesWithDefaults(
+				a);
 		if (a instanceof AnnotationMirrorImpl) {
 			AnnotationMirrorImpl impl = (AnnotationMirrorImpl) a;
 			ReferenceBinding annoType = impl._binding.getAnnotationType();
