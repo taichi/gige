@@ -158,5 +158,6 @@ Apache License, Version 2.0
 * https://github.com/google/compile-testing
 
 # Badges
-[![wercker status](https://app.wercker.com/status/b61caeec2c22ee5147590de508904961/m "wercker status")](https://app.wercker.com/project/bykey/b61caeec2c22ee5147590de508904961)
+[![Circle CI](https://circleci.com/gh/taichi/gige/tree/develop.svg?style=svg)](https://circleci.com/gh/taichi/gige/tree/develop)
+
 
