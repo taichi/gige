@@ -73,7 +73,14 @@ public class CompilationTaskImpl implements CompilationTask {
 		ICompilerRequestor requestor = new CompilerRequestorImpl(
 				standardManager, this.errorTrapper);
 		this.compiler = new Compiler(environment, getHandlingPolicy(), options,
-				requestor, this.problemFactory, out, null);
+				requestor, this.problemFactory, out,
+				null) {
+			@Override
+			public void reset() {
+				// do nothing....
+				// for OnTheFlyUnit
+			}
+		};
 
 		setTargets(compilationUnits);
 
