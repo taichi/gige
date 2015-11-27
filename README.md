@@ -19,7 +19,7 @@ apply plugin: 'java'
 repositories.jcenter()
 
 dependencies {
-    testCompile 'io.gige:gige:0.4.1'
+    testCompile 'io.gige:gige:0.4.2'
 }
 
 sourceCompatibility = targetCompatibility = 1.8
