@@ -1,3 +1,7 @@
+checkout:
+  post:
+    - chmod +x ./gradlew
+
 machine:
   timezone: Asia/Tokyo
   java:
@@ -7,10 +11,6 @@ machine:
   post:
     - sudo service mysql stop
     - sudo service postgresql stop
-
-checkout:
-  post:
-    - chmod +x ./gradlew
 
 dependencies:
   override:
