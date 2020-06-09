@@ -45,95 +45,95 @@ import javax.tools.ToolProvider;
 import org.eclipse.jdt.internal.compiler.apt.util.EclipseFileManager;
 import org.eclipse.jdt.internal.compiler.batch.FileSystem;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class EclipseCompiler implements JavaCompiler {
 
-	StandardJavaFileManager provided;
-	FileSystem filesystem;
+  StandardJavaFileManager provided;
+  FileSystem filesystem;
 
-	@Override
-	public CompilationTask getTask(Writer out,
-			JavaFileManager fileManager,
-			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Iterable<String> options,
-			Iterable<String> classes,
-			Iterable<? extends JavaFileObject> compilationUnits) {
+  @Override
+  public CompilationTask getTask(
+      Writer out,
+      JavaFileManager fileManager,
+      DiagnosticListener<? super JavaFileObject> diagnosticListener,
+      Iterable<String> options,
+      Iterable<String> classes,
+      Iterable<? extends JavaFileObject> compilationUnits) {
 
-		for (Iterator<String> i = options.iterator(); i.hasNext();) {
-			fileManager.handleOption(i.next(), i);
-		}
+    for (Iterator<String> i = options.iterator(); i.hasNext(); ) {
+      fileManager.handleOption(i.next(), i);
+    }
 
-		PrintWriter pw = out == null ? new PrintWriter(System.err, true)
-				: new PrintWriter(out);
-		CompilationTaskImpl task = new CompilationTaskImpl();
-		task.configure(pw, fileManager, this.provided, this.filesystem,
-				diagnosticListener, options, classes,
-				compilationUnits);
-		return task;
-	}
+    PrintWriter pw = out == null ? new PrintWriter(System.err, true) : new PrintWriter(out);
+    CompilationTaskImpl task = new CompilationTaskImpl();
+    task.configure(
+        pw,
+        fileManager,
+        this.provided,
+        this.filesystem,
+        diagnosticListener,
+        options,
+        classes,
+        compilationUnits);
+    return task;
+  }
 
-	@Override
-	public StandardJavaFileManager getStandardFileManager(
-			DiagnosticListener<? super JavaFileObject> diagnosticListener,
-			Locale locale,
-			Charset charset) {
-		if (this.provided == null) {
-			this.provided = newFileManager(locale, charset);
-			this.filesystem = ClasspathContainer.configure(this.provided);
-		}
-		return this.provided;
-	}
+  @Override
+  public StandardJavaFileManager getStandardFileManager(
+      DiagnosticListener<? super JavaFileObject> diagnosticListener,
+      Locale locale,
+      Charset charset) {
+    if (this.provided == null) {
+      this.provided = newFileManager(locale, charset);
+      this.filesystem = ClasspathContainer.configure(this.provided);
+    }
+    return this.provided;
+  }
 
-	protected StandardJavaFileManager newFileManager(Locale locale,
-			Charset charset) {
-		final String OS = "os.name";
-		String current = System.getProperty(OS);
-		try {
-			System.setProperty(OS, "xxx");
-			return new EclipseFileManager(locale, charset) {
-				@Override
-				public void close() throws IOException {
-					super.close();
-					filesystem.cleanup();
-					provided = null;
-					filesystem = null;
-				}
-			};
-		} finally {
-			System.setProperty(OS, current);
-		}
-	}
+  protected StandardJavaFileManager newFileManager(Locale locale, Charset charset) {
+    final String OS = "os.name";
+    String current = System.getProperty(OS);
+    try {
+      System.setProperty(OS, "xxx");
+      return new EclipseFileManager(locale, charset) {
+        @Override
+        public void close() throws IOException {
+          super.close();
+          filesystem.cleanup();
+          provided = null;
+          filesystem = null;
+        }
+      };
+    } finally {
+      System.setProperty(OS, current);
+    }
+  }
 
-	@Override
-	public int run(InputStream in, OutputStream out, OutputStream err,
-			String... arguments) {
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public int run(InputStream in, OutputStream out, OutputStream err, String... arguments) {
+    throw new UnsupportedOperationException();
+  }
 
-	@Override
-	public Set<SourceVersion> getSourceVersions() {
-		return EnumSet.of(SourceVersion.RELEASE_8);
-	}
+  @Override
+  public Set<SourceVersion> getSourceVersions() {
+    return EnumSet.of(SourceVersion.RELEASE_8);
+  }
 
-	@Override
-	public int isSupportedOption(String option) {
-		return 0;
-	}
+  @Override
+  public int isSupportedOption(String option) {
+    return 0;
+  }
 
-	@SuppressWarnings("unchecked")
-	public static void forceInstall() throws Exception {
-		Class<?> tp = ToolProvider.class;
-		Method mtd = tp.getDeclaredMethod("instance");
-		mtd.setAccessible(true);
-		Field fld = tp.getDeclaredField("toolClasses");
-		fld.setAccessible(true);
-		Map<String, Reference<Class<?>>> map = (Map<String, Reference<Class<?>>>) fld
-				.get(mtd.invoke(tp));
-		SoftReference<Class<?>> ref = new SoftReference<Class<?>>(
-				EclipseCompiler.class);
-		map.put("com.sun.tools.javac.api.JavacTool", ref);
-	}
-
+  @SuppressWarnings("unchecked")
+  public static void forceInstall() throws Exception {
+    Class<?> tp = ToolProvider.class;
+    Method mtd = tp.getDeclaredMethod("instance");
+    mtd.setAccessible(true);
+    Field fld = tp.getDeclaredField("toolClasses");
+    fld.setAccessible(true);
+    Map<String, Reference<Class<?>>> map =
+        (Map<String, Reference<Class<?>>>) fld.get(mtd.invoke(tp));
+    SoftReference<Class<?>> ref = new SoftReference<Class<?>>(EclipseCompiler.class);
+    map.put("com.sun.tools.javac.api.JavacTool", ref);
+  }
 }

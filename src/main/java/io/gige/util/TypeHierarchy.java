@@ -24,45 +24,41 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class TypeHierarchy implements Spliterator<TypeElement> {
 
-	public static Stream<TypeElement> of(ProcessingEnvironment env,
-			TypeElement element) {
-		return StreamSupport.stream(new TypeHierarchy(env, element), false);
-	}
+  public static Stream<TypeElement> of(ProcessingEnvironment env, TypeElement element) {
+    return StreamSupport.stream(new TypeHierarchy(env, element), false);
+  }
 
-	final ProcessingEnvironment env;
+  final ProcessingEnvironment env;
 
-	TypeElement current;
+  TypeElement current;
 
-	public TypeHierarchy(ProcessingEnvironment env, TypeElement element) {
-		this.env = env;
-		this.current = element;
-	}
+  public TypeHierarchy(ProcessingEnvironment env, TypeElement element) {
+    this.env = env;
+    this.current = element;
+  }
 
-	@Override
-	public boolean tryAdvance(Consumer<? super TypeElement> action) {
-		action.accept(this.current);
-		this.current = GigeTypes.to(env, this.current.getSuperclass());
-		return this.current != null
-				&& this.current.asType().getKind() != TypeKind.NONE;
-	}
+  @Override
+  public boolean tryAdvance(Consumer<? super TypeElement> action) {
+    action.accept(this.current);
+    this.current = GigeTypes.to(env, this.current.getSuperclass());
+    return this.current != null && this.current.asType().getKind() != TypeKind.NONE;
+  }
 
-	@Override
-	public Spliterator<TypeElement> trySplit() {
-		return null;
-	}
+  @Override
+  public Spliterator<TypeElement> trySplit() {
+    return null;
+  }
 
-	@Override
-	public long estimateSize() {
-		return Long.MAX_VALUE;
-	}
+  @Override
+  public long estimateSize() {
+    return Long.MAX_VALUE;
+  }
 
-	@Override
-	public int characteristics() {
-		return ORDERED | DISTINCT | NONNULL;
-	}
+  @Override
+  public int characteristics() {
+    return ORDERED | DISTINCT | NONNULL;
+  }
 }

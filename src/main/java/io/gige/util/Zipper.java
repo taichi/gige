@@ -22,54 +22,51 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class Zipper<L, R, T> implements Spliterator<T> {
 
-	public static <L, R, T> Stream<T> of(Stream<L> left, Stream<R> right,
-			BiFunction<L, R, T> fn) {
-		return StreamSupport.stream(
-				new Zipper<>(left.spliterator(), right.spliterator(), fn),
-				false);
-	}
+  public static <L, R, T> Stream<T> of(Stream<L> left, Stream<R> right, BiFunction<L, R, T> fn) {
+    return StreamSupport.stream(new Zipper<>(left.spliterator(), right.spliterator(), fn), false);
+  }
 
-	final Spliterator<L> lefts;
-	final Spliterator<R> rights;
-	final BiFunction<L, R, T> zipWith;
+  final Spliterator<L> lefts;
+  final Spliterator<R> rights;
+  final BiFunction<L, R, T> zipWith;
 
-	public Zipper(Spliterator<L> lefts, Spliterator<R> rights,
-			BiFunction<L, R, T> zipWith) {
-		super();
-		this.lefts = Objects.requireNonNull(lefts);
-		this.rights = Objects.requireNonNull(rights);
-		this.zipWith = Objects.requireNonNull(zipWith);
-	}
+  public Zipper(Spliterator<L> lefts, Spliterator<R> rights, BiFunction<L, R, T> zipWith) {
+    super();
+    this.lefts = Objects.requireNonNull(lefts);
+    this.rights = Objects.requireNonNull(rights);
+    this.zipWith = Objects.requireNonNull(zipWith);
+  }
 
-	@Override
-	public boolean tryAdvance(Consumer<? super T> action) {
-		boolean[] rNext = { false };
-		boolean lNext = this.lefts.tryAdvance(l -> {
-			rNext[0] = this.rights.tryAdvance(r -> {
-				action.accept(this.zipWith.apply(l, r));
-			});
-		});
-		return lNext && rNext[0];
-	}
+  @Override
+  public boolean tryAdvance(Consumer<? super T> action) {
+    boolean[] rNext = {false};
+    boolean lNext =
+        this.lefts.tryAdvance(
+            l -> {
+              rNext[0] =
+                  this.rights.tryAdvance(
+                      r -> {
+                        action.accept(this.zipWith.apply(l, r));
+                      });
+            });
+    return lNext && rNext[0];
+  }
 
-	@Override
-	public Spliterator<T> trySplit() {
-		return new Zipper<>(this.lefts.trySplit(), this.rights.trySplit(),
-				this.zipWith);
-	}
+  @Override
+  public Spliterator<T> trySplit() {
+    return new Zipper<>(this.lefts.trySplit(), this.rights.trySplit(), this.zipWith);
+  }
 
-	@Override
-	public long estimateSize() {
-		return Math.min(this.lefts.estimateSize(), this.rights.estimateSize());
-	}
+  @Override
+  public long estimateSize() {
+    return Math.min(this.lefts.estimateSize(), this.rights.estimateSize());
+  }
 
-	@Override
-	public int characteristics() {
-		return lefts.characteristics() & rights.characteristics();
-	}
+  @Override
+  public int characteristics() {
+    return lefts.characteristics() & rights.characteristics();
+  }
 }

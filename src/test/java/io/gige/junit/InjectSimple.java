@@ -25,24 +25,22 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(CompilerRunner.class)
 public class InjectSimple {
-	@Compilers({ Type.Standard })
-	CompilerContext context;
-	static int i = 0;
+  @Compilers({Type.Standard})
+  CompilerContext context;
 
-	@Test
-	public void runningTests() throws Exception {
-		i++;
-		assertNotNull(context);
+  static int i = 0;
 
-	}
+  @Test
+  public void runningTests() throws Exception {
+    i++;
+    assertNotNull(context);
+  }
 
-	@AfterClass
-	public static void afterClass() {
-		assertEquals(1, i);
-	}
+  @AfterClass
+  public static void afterClass() {
+    assertEquals(1, i);
+  }
 }

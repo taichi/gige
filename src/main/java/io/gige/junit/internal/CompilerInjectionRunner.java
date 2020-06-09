@@ -31,91 +31,86 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
 
-	final Type provider;
+  final Type provider;
 
-	public CompilerInjectionRunner(Class<?> klass, Type provider)
-			throws InitializationError {
-		super(klass);
-		this.provider = provider;
-	}
+  public CompilerInjectionRunner(Class<?> klass, Type provider) throws InitializationError {
+    super(klass);
+    this.provider = provider;
+  }
 
-	public static Runner safeRunnerForClass(Class<?> clazz, Type type) {
-		try {
-			return new CompilerInjectionRunner(clazz, type);
-		} catch (InitializationError e) {
-			e.getCauses().forEach(Throwable::printStackTrace);
-			return new ErrorReportingRunner(clazz, e.getCause());
-		}
-	}
+  public static Runner safeRunnerForClass(Class<?> clazz, Type type) {
+    try {
+      return new CompilerInjectionRunner(clazz, type);
+    } catch (InitializationError e) {
+      e.getCauses().forEach(Throwable::printStackTrace);
+      return new ErrorReportingRunner(clazz, e.getCause());
+    }
+  }
 
-	@Override
-	protected String getName() {
-		return this.provider.name();
-	}
+  @Override
+  protected String getName() {
+    return this.provider.name();
+  }
 
-	@Override
-	protected String testName(FrameworkMethod method) {
-		return method.getName() + " #" + getName();
-	}
+  @Override
+  protected String testName(FrameworkMethod method) {
+    return method.getName() + " #" + getName();
+  }
 
-	@Override
-	protected Object createTest() throws Exception {
-		Object test = getTestClass().getJavaClass().newInstance();
-		handleCompilerFields(f -> {
-			for (Type t : f.getAnnotation(io.gige.Compilers.class).value()) {
-				if (CompilerContext.class.isAssignableFrom(f.getType())
-						&& t.equals(this.provider)) {
-					f.set(test, new CompilerContext(t));
-				}
-			}
-		});
-		return test;
-	}
+  @Override
+  protected Object createTest() throws Exception {
+    Object test = getTestClass().getJavaClass().newInstance();
+    handleCompilerFields(
+        f -> {
+          for (Type t : f.getAnnotation(io.gige.Compilers.class).value()) {
+            if (CompilerContext.class.isAssignableFrom(f.getType()) && t.equals(this.provider)) {
+              f.set(test, new CompilerContext(t));
+            }
+          }
+        });
+    return test;
+  }
 
-	protected void handleCompilerFields(ExceptionalConsumer<Field> fn)
-			throws Exception {
-		List<FrameworkField> fields = getTestClass()
-				.getAnnotatedFields(io.gige.Compilers.class);
-		for (FrameworkField ff : fields) {
-			Field f = ff.getField();
-			f.setAccessible(true);
-			fn.accept(f);
-		}
-	}
+  protected void handleCompilerFields(ExceptionalConsumer<Field> fn) throws Exception {
+    List<FrameworkField> fields = getTestClass().getAnnotatedFields(io.gige.Compilers.class);
+    for (FrameworkField ff : fields) {
+      Field f = ff.getField();
+      f.setAccessible(true);
+      fn.accept(f);
+    }
+  }
 
-	@Override
-	protected Statement withAfters(FrameworkMethod method, Object target,
-			Statement statement) {
-		Statement stmt = super.withAfters(method, target, statement);
-		return new Statement() {
-			@Override
-			public void evaluate() throws Throwable {
-				try {
-					stmt.evaluate();
-				} finally {
-					closeBuilders(target);
-				}
-			}
-		};
-	}
+  @Override
+  protected Statement withAfters(FrameworkMethod method, Object target, Statement statement) {
+    Statement stmt = super.withAfters(method, target, statement);
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        try {
+          stmt.evaluate();
+        } finally {
+          closeBuilders(target);
+        }
+      }
+    };
+  }
 
-	protected void closeBuilders(Object target) throws Exception {
-		handleCompilerFields(f -> {
-			Object member = f.get(target);
-			if (member instanceof CompilerContext) {
-				CompilerContext cb = (CompilerContext) member;
-				cb.close();
-			}
-		});
-	}
+  protected void closeBuilders(Object target) throws Exception {
+    handleCompilerFields(
+        f -> {
+          Object member = f.get(target);
+          if (member instanceof CompilerContext) {
+            CompilerContext cb = (CompilerContext) member;
+            cb.close();
+          }
+        });
+  }
 
-	@Override
-	protected Statement classBlock(RunNotifier notifier) {
-		return childrenInvoker(notifier);
-	}
+  @Override
+  protected Statement classBlock(RunNotifier notifier) {
+    return childrenInvoker(notifier);
+  }
 }

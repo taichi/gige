@@ -33,42 +33,39 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(CompilerRunner.class)
 public class TypeHierarchyTest {
 
-	@Compilers
-	CompilerContext context;
+  @Compilers CompilerContext context;
 
-	@Before
-	public void setUp() throws Exception {
-		this.context
-				.set(Locale.JAPANESE)
-				.setSourcePath("src/test/java")
-				.setUnits(TestSource.class)
-				.set(
-						diag -> System.out.println(diag));
-	}
+  @Before
+  public void setUp() throws Exception {
+    this.context
+        .set(Locale.JAPANESE)
+        .setSourcePath("src/test/java")
+        .setUnits(TestSource.class)
+        .set(diag -> System.out.println(diag));
+  }
 
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
+  @Test
+  public void test() throws Exception {
+    CompilationResult result = this.context.compile();
 
-		TypeElement element = result
-				.getTypeElement(HashMap.class)
-				.orElseThrow(AssertionError::new);
-		Stream<String> actual = TypeHierarchy
-				.of(result.getEnvironment(), element)
-				.map(TypeElement::getQualifiedName)
-				.map(Name::toString);
-		Stream<String> expected = Stream.of("java.util.HashMap",
-				"java.util.AbstractMap", "java.lang.Object");
-		Zipper.of(expected, actual, (l, r) -> {
-			assertEquals(l, r);
-			return l + " " + r;
-		}).forEach(System.out::println);
-	}
-
+    TypeElement element = result.getTypeElement(HashMap.class).orElseThrow(AssertionError::new);
+    Stream<String> actual =
+        TypeHierarchy.of(result.getEnvironment(), element)
+            .map(TypeElement::getQualifiedName)
+            .map(Name::toString);
+    Stream<String> expected =
+        Stream.of("java.util.HashMap", "java.util.AbstractMap", "java.lang.Object");
+    Zipper.of(
+            expected,
+            actual,
+            (l, r) -> {
+              assertEquals(l, r);
+              return l + " " + r;
+            })
+        .forEach(System.out::println);
+  }
 }

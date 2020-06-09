@@ -26,32 +26,28 @@ import javax.tools.StandardLocation;
 
 import org.eclipse.jdt.internal.compiler.batch.FileSystem;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class ClasspathContainer extends FileSystem {
 
-	protected ClasspathContainer(Classpath[] paths) {
-		super(paths, null, true);
-	}
+  protected ClasspathContainer(Classpath[] paths) {
+    super(paths, null, true);
+  }
 
-	public static FileSystem configure(
-			StandardJavaFileManager standardManager) {
-		Classpath[] paths = Arrays
-				.asList(StandardLocation.PLATFORM_CLASS_PATH,
-						StandardLocation.SOURCE_PATH,
-						StandardLocation.SOURCE_OUTPUT,
-						StandardLocation.CLASS_PATH)
-				.stream()
-				.map(loc -> Optional
-						.ofNullable(standardManager.getLocation(loc)))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.<File> flatMap(files -> stream(files.spliterator(), false))
-				.map(file -> FileSystem.getClasspath(file.getAbsolutePath(),
-						null, null))
-				.filter(cp -> cp != null)
-				.toArray(Classpath[]::new);
-		return new ClasspathContainer(paths);
-	}
+  public static FileSystem configure(StandardJavaFileManager standardManager) {
+    Classpath[] paths =
+        Arrays.asList(
+                StandardLocation.PLATFORM_CLASS_PATH,
+                StandardLocation.SOURCE_PATH,
+                StandardLocation.SOURCE_OUTPUT,
+                StandardLocation.CLASS_PATH)
+            .stream()
+            .map(loc -> Optional.ofNullable(standardManager.getLocation(loc)))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .<File>flatMap(files -> stream(files.spliterator(), false))
+            .map(file -> FileSystem.getClasspath(file.getAbsolutePath(), null, null))
+            .filter(cp -> cp != null)
+            .toArray(Classpath[]::new);
+    return new ClasspathContainer(paths);
+  }
 }

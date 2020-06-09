@@ -26,27 +26,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(CompilerRunner.class)
 public class UseCompilerRunner {
 
-	@Compilers
-	CompilerContext context;
+  @Compilers CompilerContext context;
 
-	@Before
-	public void setUp() {
-		// CompilerRunner close CompilerContext automatically.
-		this.context
-				.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag))
-				.setUnits(TestSource.class);
-	}
+  @Before
+  public void setUp() {
+    // CompilerRunner close CompilerContext automatically.
+    this.context
+        .setSourcePath("src/test/java", "src/test/resources")
+        .set(diag -> System.out.println(diag))
+        .setUnits(TestSource.class);
+  }
 
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
-	}
+  @Test
+  public void test() throws Exception {
+    CompilationResult result = this.context.compile();
+    assertTrue(result.success());
+  }
 }

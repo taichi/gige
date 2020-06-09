@@ -29,41 +29,37 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(Parameterized.class)
 public class UseParameterized {
 
-	@Parameters(name = "{0}")
-	public static Compilers.Type[][] newContexts() {
-		return new Compilers.Type[][] { { Compilers.Type.Standard },
-				{ Compilers.Type.Eclipse } };
-	}
+  @Parameters(name = "{0}")
+  public static Compilers.Type[][] newContexts() {
+    return new Compilers.Type[][] {{Compilers.Type.Standard}, {Compilers.Type.Eclipse}};
+  }
 
-	@Parameter
-	public Compilers.Type type;
+  @Parameter public Compilers.Type type;
 
-	CompilerContext context;
+  CompilerContext context;
 
-	@Before
-	public void setUp() {
-		this.context = new CompilerContext(this.type);
-		this.context
-				.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag))
-				.setUnits(TestSource.class);
-	}
+  @Before
+  public void setUp() {
+    this.context = new CompilerContext(this.type);
+    this.context
+        .setSourcePath("src/test/java", "src/test/resources")
+        .set(diag -> System.out.println(diag))
+        .setUnits(TestSource.class);
+  }
 
-	@After
-	public void tearDown() throws Exception {
-		// you must release external resources here.
-		this.context.close();
-	}
+  @After
+  public void tearDown() throws Exception {
+    // you must release external resources here.
+    this.context.close();
+  }
 
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
-	}
+  @Test
+  public void test() throws Exception {
+    CompilationResult result = this.context.compile();
+    assertTrue(result.success());
+  }
 }

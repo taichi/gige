@@ -26,28 +26,24 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(Theories.class)
 public class UseTheories {
 
-	@DataPoints
-	public static Compilers.Type[] jdk = Compilers.Type.values();
+  @DataPoints public static Compilers.Type[] jdk = Compilers.Type.values();
 
-	CompilerContext setUp(CompilerContext context) {
-		return context.setSourcePath("src/test/java", "src/test/resources").set(
-				diag -> System.out.println(diag));
-	}
+  CompilerContext setUp(CompilerContext context) {
+    return context
+        .setSourcePath("src/test/java", "src/test/resources")
+        .set(diag -> System.out.println(diag));
+  }
 
-	@Theory
-	public void test(Compilers.Type type) throws Exception {
-		// you must release external resources
-		try (CompilerContext context = new CompilerContext(type)) {
-			CompilationResult result = setUp(context)
-					.setUnits(TestSource.class)
-					.compile();
-			assertTrue(result.success());
-		}
-	}
+  @Theory
+  public void test(Compilers.Type type) throws Exception {
+    // you must release external resources
+    try (CompilerContext context = new CompilerContext(type)) {
+      CompilationResult result = setUp(context).setUnits(TestSource.class).compile();
+      assertTrue(result.success());
+    }
+  }
 }

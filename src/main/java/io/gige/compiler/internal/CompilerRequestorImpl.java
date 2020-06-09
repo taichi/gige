@@ -31,46 +31,48 @@ import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class CompilerRequestorImpl implements ICompilerRequestor {
 
-	final StandardJavaFileManager manager;
-	final DiagnosticListener<? super JavaFileObject> diagnosticListener;
+  final StandardJavaFileManager manager;
+  final DiagnosticListener<? super JavaFileObject> diagnosticListener;
 
-	public CompilerRequestorImpl(StandardJavaFileManager manager,
-			DiagnosticListener<? super JavaFileObject> diagnosticListener) {
-		this.manager = manager;
-		this.diagnosticListener = diagnosticListener;
-	}
+  public CompilerRequestorImpl(
+      StandardJavaFileManager manager,
+      DiagnosticListener<? super JavaFileObject> diagnosticListener) {
+    this.manager = manager;
+    this.diagnosticListener = diagnosticListener;
+  }
 
-	@Override
-	public void acceptResult(CompilationResult result) {
-		if (result.hasProblems()) {
-			report(Kind.ERROR, result.getErrors());
-		}
-		if (result.hasTasks()) {
-			report(Kind.NOTE, result.getTasks());
-		}
-		try {
-			for (ClassFile cf : result.getClassFiles()) {
-				String className = new String(cf.fileName());
-				JavaFileObject obj = this.manager.getJavaFileForOutput(
-						StandardLocation.CLASS_OUTPUT, className,
-						javax.tools.JavaFileObject.Kind.CLASS, null);
-				try (OutputStream out = obj.openOutputStream()) {
-					out.write(cf.getBytes());
-				}
-			}
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
+  @Override
+  public void acceptResult(CompilationResult result) {
+    if (result.hasProblems()) {
+      report(Kind.ERROR, result.getErrors());
+    }
+    if (result.hasTasks()) {
+      report(Kind.NOTE, result.getTasks());
+    }
+    try {
+      for (ClassFile cf : result.getClassFiles()) {
+        String className = new String(cf.fileName());
+        JavaFileObject obj =
+            this.manager.getJavaFileForOutput(
+                StandardLocation.CLASS_OUTPUT,
+                className,
+                javax.tools.JavaFileObject.Kind.CLASS,
+                null);
+        try (OutputStream out = obj.openOutputStream()) {
+          out.write(cf.getBytes());
+        }
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 
-	protected void report(Kind kind, CategorizedProblem[] problems) {
-		Stream.of(problems).map(p -> new DiagnosticAdapter(kind, p)).forEach(
-				diagnosticListener::report);
-	}
-
+  protected void report(Kind kind, CategorizedProblem[] problems) {
+    Stream.of(problems)
+        .map(p -> new DiagnosticAdapter(kind, p))
+        .forEach(diagnosticListener::report);
+  }
 }

@@ -26,27 +26,25 @@ import java.util.function.Supplier;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
 public @interface Compilers {
 
-	Type[] value() default { Type.Standard, Type.Eclipse };
+  Type[] value() default {Type.Standard, Type.Eclipse};
 
-	public enum Type implements Supplier<JavaCompiler> {
-		Standard {
-			@Override
-			public JavaCompiler get() {
-				return ToolProvider.getSystemJavaCompiler();
-			}
-		},
-		Eclipse {
-			@Override
-			public JavaCompiler get() {
-				return new EclipseCompiler();
-			}
-		};
-	}
+  public enum Type implements Supplier<JavaCompiler> {
+    Standard {
+      @Override
+      public JavaCompiler get() {
+        return ToolProvider.getSystemJavaCompiler();
+      }
+    },
+    Eclipse {
+      @Override
+      public JavaCompiler get() {
+        return new EclipseCompiler();
+      }
+    };
+  }
 }

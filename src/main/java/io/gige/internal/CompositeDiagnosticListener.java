@@ -23,33 +23,27 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 
-/**
- * @author taichi
- */
-public class CompositeDiagnosticListener
-		implements DiagnosticListener<JavaFileObject> {
+/** @author taichi */
+public class CompositeDiagnosticListener implements DiagnosticListener<JavaFileObject> {
 
-	final List<DiagnosticListener<JavaFileObject>> listeners;
+  final List<DiagnosticListener<JavaFileObject>> listeners;
 
-	final DiagnosticCollector<JavaFileObject> storage = new DiagnosticCollector<>();
+  final DiagnosticCollector<JavaFileObject> storage = new DiagnosticCollector<>();
 
-	public CompositeDiagnosticListener(
-			DiagnosticListener<JavaFileObject> delegate) {
-		this.listeners = Arrays.asList(this.storage, orElse(delegate));
-	}
+  public CompositeDiagnosticListener(DiagnosticListener<JavaFileObject> delegate) {
+    this.listeners = Arrays.asList(this.storage, orElse(delegate));
+  }
 
-	protected DiagnosticListener<JavaFileObject> orElse(
-			DiagnosticListener<JavaFileObject> delegate) {
-		return delegate == null ? t -> {
-		} : delegate;
-	}
+  protected DiagnosticListener<JavaFileObject> orElse(DiagnosticListener<JavaFileObject> delegate) {
+    return delegate == null ? t -> {} : delegate;
+  }
 
-	@Override
-	public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-		listeners.forEach(dl -> dl.report(diagnostic));
-	}
+  @Override
+  public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+    listeners.forEach(dl -> dl.report(diagnostic));
+  }
 
-	public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
-		return this.storage.getDiagnostics();
-	}
+  public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
+    return this.storage.getDiagnostics();
+  }
 }

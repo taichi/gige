@@ -22,36 +22,32 @@ import io.gige.Compilers;
 import org.junit.Test;
 import org.junit.runners.model.InitializationError;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class MisconfigurationTest {
 
-	@Test
-	public void withoutCompilers() {
-		try {
-			new CompilerRunner(WithoutCompilers.class);
-			fail();
-		} catch (InitializationError e) {
-			assertTrue(true);
-		}
-	}
+  @Test
+  public void withoutCompilers() {
+    try {
+      new CompilerRunner(WithoutCompilers.class);
+      fail();
+    } catch (InitializationError e) {
+      assertTrue(true);
+    }
+  }
 
-	public static class WithoutCompilers {
-	}
+  public static class WithoutCompilers {}
 
-	@Test
-	public void mismatchType() throws Exception {
-		try {
-			new CompilerRunner(IllegalType.class);
-			fail();
-		} catch (InitializationError e) {
-			assertTrue(true);
-		}
-	}
+  @Test
+  public void mismatchType() throws Exception {
+    try {
+      new CompilerRunner(IllegalType.class);
+      fail();
+    } catch (InitializationError e) {
+      assertTrue(true);
+    }
+  }
 
-	public static class IllegalType {
-		@Compilers
-		String missed;
-	}
+  public static class IllegalType {
+    @Compilers String missed;
+  }
 }

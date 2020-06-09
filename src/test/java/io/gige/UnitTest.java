@@ -29,37 +29,33 @@ import org.junit.runner.RunWith;
 
 import io.gige.junit.CompilerRunner;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(CompilerRunner.class)
 public class UnitTest {
 
-	@Compilers
-	CompilerContext context;
+  @Compilers CompilerContext context;
 
-	@Before
-	public void setUp() throws Exception {
-		this.context.setSourcePath("src/test/java").set(System.out::println);
-	}
+  @Before
+  public void setUp() throws Exception {
+    this.context.setSourcePath("src/test/java").set(System.out::println);
+  }
 
-	@Test
-	public void test() throws Exception {
-		this.context
-				.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
+  @Test
+  public void test() throws Exception {
+    this.context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
+    CompilationResult result = this.context.compile();
+    assertTrue(result.success());
 
-		FileObject fo = result.env.getFiler().getResource(
-				StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
-		assertNotNull(fo);
+    FileObject fo =
+        result.env.getFiler().getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
+    assertNotNull(fo);
 
-		CharSequence content = fo.getCharContent(true);
-		assertNotNull(content);
-		assertTrue(0 < content.length());
+    CharSequence content = fo.getCharContent(true);
+    assertNotNull(content);
+    assertTrue(0 < content.length());
 
-		Elements elems = result.env.getElementUtils();
-		TypeElement te = elems.getTypeElement("aaa.Bbb");
-		assertNotNull(te);
-	}
+    Elements elems = result.env.getElementUtils();
+    TypeElement te = elems.getTypeElement("aaa.Bbb");
+    assertNotNull(te);
+  }
 }

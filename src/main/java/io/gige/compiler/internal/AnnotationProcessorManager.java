@@ -22,46 +22,43 @@ import org.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 import org.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;
 import org.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class AnnotationProcessorManager extends BaseAnnotationProcessorManager {
 
-	public AnnotationProcessorManager(BaseProcessingEnvImpl env) {
-		this._processingEnv = env;
-	}
+  public AnnotationProcessorManager(BaseProcessingEnvImpl env) {
+    this._processingEnv = env;
+  }
 
-	public void configure(Iterable<String> options) {
-		for (String s : options) {
-			if (s.equalsIgnoreCase("-XprintProcessorInfo")) {
-				_printProcessorInfo = true;
-			}
-			if (s.equalsIgnoreCase("-XprintRounds")) {
-				_printRounds = true;
-			}
-		}
-	}
+  public void configure(Iterable<String> options) {
+    for (String s : options) {
+      if (s.equalsIgnoreCase("-XprintProcessorInfo")) {
+        _printProcessorInfo = true;
+      }
+      if (s.equalsIgnoreCase("-XprintRounds")) {
+        _printRounds = true;
+      }
+    }
+  }
 
-	@Override
-	public void setProcessors(Object[] processors) {
-		for (Object o : processors) {
-			if (o instanceof Processor) {
-				Processor p = (Processor) o;
-				p.init(_processingEnv);
-				ProcessorInfo pi = new ProcessorInfo(p);
-				_processors.add(pi);
-			}
-		}
-	}
+  @Override
+  public void setProcessors(Object[] processors) {
+    for (Object o : processors) {
+      if (o instanceof Processor) {
+        Processor p = (Processor) o;
+        p.init(_processingEnv);
+        ProcessorInfo pi = new ProcessorInfo(p);
+        _processors.add(pi);
+      }
+    }
+  }
 
-	@Override
-	public ProcessorInfo discoverNextProcessor() {
-		return null; // do nothing.
-	}
+  @Override
+  public ProcessorInfo discoverNextProcessor() {
+    return null; // do nothing.
+  }
 
-	@Override
-	public void reportProcessorException(Processor p, Exception e) {
-		throw new AbortCompilation(null, e);
-	}
-
+  @Override
+  public void reportProcessorException(Processor p, Exception e) {
+    throw new AbortCompilation(null, e);
+  }
 }

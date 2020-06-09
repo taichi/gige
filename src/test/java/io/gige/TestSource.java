@@ -6,54 +6,51 @@ import java.util.Map;
 @TestAnnotation
 public class TestSource<T> {
 
-	int aaa;
+  int aaa;
 
-	String[] bbb;
+  String[] bbb;
 
-	List<T> ccc;
+  List<T> ccc;
 
-	Map<String, List<Integer>> map;
+  Map<String, List<Integer>> map;
 
-	public TestSource() {
-	}
+  public TestSource() {}
 
-	protected TestSource(final int aaa) {
-		this.aaa = aaa;
-	}
+  protected TestSource(final int aaa) {
+    this.aaa = aaa;
+  }
 
-	TestSource(final String... bbb) {
-		this.bbb = bbb;
-	}
+  TestSource(final String... bbb) {
+    this.bbb = bbb;
+  }
 
-	TestSource(final List<T> ccc) {
-		this.ccc = ccc;
-	}
+  TestSource(final List<T> ccc) {
+    this.ccc = ccc;
+  }
 
-	TestSource(Map<String, List<Integer>> map) {
-		this.map = map;
-	}
+  TestSource(Map<String, List<Integer>> map) {
+    this.map = map;
+  }
 
-	void aaa() {
-	}
+  void aaa() {}
 
-	void aaa(int aaa) {
-		this.aaa = aaa;
-	}
+  void aaa(int aaa) {
+    this.aaa = aaa;
+  }
 
-	public void setAaa(final int aaa) {
-		this.aaa = aaa;
-	}
+  public void setAaa(final int aaa) {
+    this.aaa = aaa;
+  }
 
-	protected void setBbb(final String... bbb) {
-		this.bbb = bbb;
-	}
+  protected void setBbb(final String... bbb) {
+    this.bbb = bbb;
+  }
 
-	void setCcc(final List<T> ccc) {
-		this.ccc = ccc;
-	}
+  void setCcc(final List<T> ccc) {
+    this.ccc = ccc;
+  }
 
-	public static <T> TestSource<T> of(List<Map<String, T>> ccc) {
-		return null;
-	}
-
+  public static <T> TestSource<T> of(List<Map<String, T>> ccc) {
+    return null;
+  }
 }

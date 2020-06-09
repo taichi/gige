@@ -30,38 +30,32 @@ import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class CompilerRunner extends Suite {
 
-	public CompilerRunner(Class<?> klass) throws InitializationError {
-		super(klass, configureRunners(klass));
-	}
+  public CompilerRunner(Class<?> klass) throws InitializationError {
+    super(klass, configureRunners(klass));
+  }
 
-	protected static List<Runner> configureRunners(Class<?> clazz)
-			throws InitializationError {
-		TestClass testClass = new TestClass(clazz);
-		List<FrameworkField> fields = testClass
-				.getAnnotatedFields(Compilers.class);
-		if (fields == null || fields.isEmpty()) {
-			throw new InitializationError(
-					"You must annotate @Compilers to field.");
-		}
-		for (FrameworkField ff : fields) {
-			Field f = ff.getField();
-			if (CompilerContext.class.isAssignableFrom(f.getType()) == false) {
-				throw new InitializationError(
-						"annotated field must be io.gige.CompilerContext.");
-			}
-		}
-		return fields
-				.stream()
-				.map(FrameworkField::getField)
-				.map(f -> f.getAnnotation(Compilers.class))
-				.flatMap(c -> Stream.of(c.value()))
-				.distinct()
-				.map(t -> CompilerInjectionRunner.safeRunnerForClass(clazz, t))
-				.collect(Collectors.toList());
-	}
+  protected static List<Runner> configureRunners(Class<?> clazz) throws InitializationError {
+    TestClass testClass = new TestClass(clazz);
+    List<FrameworkField> fields = testClass.getAnnotatedFields(Compilers.class);
+    if (fields == null || fields.isEmpty()) {
+      throw new InitializationError("You must annotate @Compilers to field.");
+    }
+    for (FrameworkField ff : fields) {
+      Field f = ff.getField();
+      if (CompilerContext.class.isAssignableFrom(f.getType()) == false) {
+        throw new InitializationError("annotated field must be io.gige.CompilerContext.");
+      }
+    }
+    return fields
+        .stream()
+        .map(FrameworkField::getField)
+        .map(f -> f.getAnnotation(Compilers.class))
+        .flatMap(c -> Stream.of(c.value()))
+        .distinct()
+        .map(t -> CompilerInjectionRunner.safeRunnerForClass(clazz, t))
+        .collect(Collectors.toList());
+  }
 }

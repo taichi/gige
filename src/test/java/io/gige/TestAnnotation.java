@@ -6,6 +6,4 @@ import java.lang.annotation.RetentionPolicy;
 
 @java.lang.annotation.Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface TestAnnotation {
-
-}
+public @interface TestAnnotation {}

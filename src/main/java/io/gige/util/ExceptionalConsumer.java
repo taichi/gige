@@ -15,11 +15,9 @@
  */
 package io.gige.util;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @FunctionalInterface
 public interface ExceptionalConsumer<T> {
 
-	void accept(T t) throws Exception;
+  void accept(T t) throws Exception;
 }

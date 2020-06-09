@@ -24,23 +24,20 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @RunWith(CompilerRunner.class)
 public class InjectMulti {
-	@Compilers
-	CompilerContext context;
-	static int i = 0;
+  @Compilers CompilerContext context;
+  static int i = 0;
 
-	@Test
-	public void runningTests() throws Exception {
-		i++;
-		assertNotNull(context);
-	}
+  @Test
+  public void runningTests() throws Exception {
+    i++;
+    assertNotNull(context);
+  }
 
-	@AfterClass
-	public static void afterClass() {
-		assertEquals(2, i);
-	}
+  @AfterClass
+  public static void afterClass() {
+    assertEquals(2, i);
+  }
 }
