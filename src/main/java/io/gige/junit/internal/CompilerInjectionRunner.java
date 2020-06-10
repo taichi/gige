@@ -15,10 +15,6 @@
  */
 package io.gige.junit.internal;
 
-import io.gige.CompilerContext;
-import io.gige.Compilers.Type;
-import io.gige.util.ExceptionalConsumer;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -30,6 +26,10 @@ import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+
+import io.gige.CompilerContext;
+import io.gige.Compilers.Type;
+import io.gige.util.ExceptionalConsumer;
 
 /** @author taichi */
 public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
@@ -57,13 +57,13 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
 
   @Override
   protected String testName(FrameworkMethod method) {
-    return method.getName() + " #" + getName();
+    return method.getName() + " #" + this.getName();
   }
 
   @Override
   protected Object createTest() throws Exception {
-    Object test = getTestClass().getJavaClass().newInstance();
-    handleCompilerFields(
+    Object test = this.getTestClass().getOnlyConstructor().newInstance();
+    this.handleCompilerFields(
         f -> {
           for (Type t : f.getAnnotation(io.gige.Compilers.class).value()) {
             if (CompilerContext.class.isAssignableFrom(f.getType()) && t.equals(this.provider)) {
@@ -75,7 +75,7 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
   }
 
   protected void handleCompilerFields(ExceptionalConsumer<Field> fn) throws Exception {
-    List<FrameworkField> fields = getTestClass().getAnnotatedFields(io.gige.Compilers.class);
+    List<FrameworkField> fields = this.getTestClass().getAnnotatedFields(io.gige.Compilers.class);
     for (FrameworkField ff : fields) {
       Field f = ff.getField();
       f.setAccessible(true);
@@ -92,14 +92,14 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
         try {
           stmt.evaluate();
         } finally {
-          closeBuilders(target);
+          CompilerInjectionRunner.this.closeBuilders(target);
         }
       }
     };
   }
 
   protected void closeBuilders(Object target) throws Exception {
-    handleCompilerFields(
+    this.handleCompilerFields(
         f -> {
           Object member = f.get(target);
           if (member instanceof CompilerContext) {
@@ -111,6 +111,6 @@ public class CompilerInjectionRunner extends BlockJUnit4ClassRunner {
 
   @Override
   protected Statement classBlock(RunNotifier notifier) {
-    return childrenInvoker(notifier);
+    return this.childrenInvoker(notifier);
   }
 }
