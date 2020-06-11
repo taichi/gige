@@ -28,12 +28,12 @@ public class TestProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
-    if (called) {
+    if (this.called) {
       return false;
     }
     this.called = true;
 
-    processingEnv.getMessager().printMessage(Kind.OTHER, "processing now!");
+    this.processingEnv.getMessager().printMessage(Kind.OTHER, "processing now!");
 
     Filer filer = this.processingEnv.getFiler();
     try {

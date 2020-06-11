@@ -15,14 +15,12 @@
  */
 package io.gige;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,18 +42,18 @@ public class UnitTest {
   public void test() throws Exception {
     this.context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
     CompilationResult result = this.context.compile();
-    assertTrue(result.success());
+    Assert.assertTrue(result.success());
 
     FileObject fo =
         result.env.getFiler().getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
-    assertNotNull(fo);
+    Assert.assertNotNull(fo);
 
     CharSequence content = fo.getCharContent(true);
-    assertNotNull(content);
-    assertTrue(0 < content.length());
+    Assert.assertNotNull(content);
+    Assert.assertTrue(0 < content.length());
 
     Elements elems = result.env.getElementUtils();
     TypeElement te = elems.getTypeElement("aaa.Bbb");
-    assertNotNull(te);
+    Assert.assertNotNull(te);
   }
 }

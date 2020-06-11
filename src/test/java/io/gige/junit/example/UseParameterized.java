@@ -16,10 +16,6 @@
 package io.gige.junit.example;
 
 import static org.junit.Assert.assertTrue;
-import io.gige.CompilationResult;
-import io.gige.CompilerContext;
-import io.gige.Compilers;
-import io.gige.TestSource;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +24,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+
+import io.gige.CompilationResult;
+import io.gige.CompilerContext;
+import io.gige.Compilers;
+import io.gige.TestSource;
 
 /** @author taichi */
 @RunWith(Parameterized.class)

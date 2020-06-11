@@ -16,15 +16,16 @@
 package io.gige.junit.example;
 
 import static org.junit.Assert.assertTrue;
-import io.gige.CompilationResult;
-import io.gige.CompilerContext;
-import io.gige.Compilers;
-import io.gige.TestSource;
 
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+
+import io.gige.CompilationResult;
+import io.gige.CompilerContext;
+import io.gige.Compilers;
+import io.gige.TestSource;
 
 /** @author taichi */
 @RunWith(Theories.class)
@@ -42,7 +43,7 @@ public class UseTheories {
   public void test(Compilers.Type type) throws Exception {
     // you must release external resources
     try (CompilerContext context = new CompilerContext(type)) {
-      CompilationResult result = setUp(context).setUnits(TestSource.class).compile();
+      CompilationResult result = this.setUp(context).setUnits(TestSource.class).compile();
       assertTrue(result.success());
     }
   }

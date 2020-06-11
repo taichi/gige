@@ -41,7 +41,7 @@ public class DiagnosticProcessor extends AbstractProcessor {
       return false;
     }
 
-    Messager messager = processingEnv.getMessager();
+    Messager messager = this.processingEnv.getMessager();
     messager.printMessage(Kind.NOTE, "NOTE message");
 
     annotations

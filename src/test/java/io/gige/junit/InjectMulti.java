@@ -17,12 +17,13 @@ package io.gige.junit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.gige.CompilerContext;
-import io.gige.Compilers;
 
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.gige.CompilerContext;
+import io.gige.Compilers;
 
 /** @author taichi */
 @RunWith(CompilerRunner.class)
@@ -33,7 +34,7 @@ public class InjectMulti {
   @Test
   public void runningTests() throws Exception {
     i++;
-    assertNotNull(context);
+    assertNotNull(this.context);
   }
 
   @AfterClass

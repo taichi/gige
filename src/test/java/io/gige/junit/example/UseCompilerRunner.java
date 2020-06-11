@@ -16,15 +16,16 @@
 package io.gige.junit.example;
 
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import io.gige.CompilationResult;
 import io.gige.CompilerContext;
 import io.gige.Compilers;
 import io.gige.TestSource;
 import io.gige.junit.CompilerRunner;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /** @author taichi */
 @RunWith(CompilerRunner.class)

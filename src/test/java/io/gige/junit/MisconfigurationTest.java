@@ -17,10 +17,11 @@ package io.gige.junit;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import io.gige.Compilers;
 
 import org.junit.Test;
 import org.junit.runners.model.InitializationError;
+
+import io.gige.Compilers;
 
 /** @author taichi */
 public class MisconfigurationTest {

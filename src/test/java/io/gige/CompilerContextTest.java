@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.gige.junit.CompilerRunner;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +35,8 @@ import javax.tools.JavaFileObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.gige.junit.CompilerRunner;
 
 /** @author taichi */
 @RunWith(CompilerRunner.class)

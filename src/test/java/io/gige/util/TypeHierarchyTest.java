@@ -16,11 +16,6 @@
 package io.gige.util;
 
 import static org.junit.Assert.assertEquals;
-import io.gige.CompilationResult;
-import io.gige.CompilerContext;
-import io.gige.Compilers;
-import io.gige.TestSource;
-import io.gige.junit.CompilerRunner;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -32,6 +27,12 @@ import javax.lang.model.element.TypeElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.gige.CompilationResult;
+import io.gige.CompilerContext;
+import io.gige.Compilers;
+import io.gige.TestSource;
+import io.gige.junit.CompilerRunner;
 
 /** @author taichi */
 @RunWith(CompilerRunner.class)
