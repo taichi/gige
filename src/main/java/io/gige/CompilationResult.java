@@ -82,7 +82,7 @@ public class CompilationResult implements AutoCloseable {
   }
 
   public Optional<TypeElement> getTypeElement(Class<?> clazz) {
-    return getTypeElement(clazz.getCanonicalName());
+    return this.getTypeElement(clazz.getCanonicalName());
   }
 
   public Optional<TypeElement> getTypeElement(String className) {
@@ -102,29 +102,29 @@ public class CompilationResult implements AutoCloseable {
   }
 
   protected Predicate<ExecutableElement> argsFilter(String... argTypes) {
-    return sizeFilter(argTypes.length).and(e -> isSameTypes(e, argTypes));
+    return this.sizeFilter(argTypes.length).and(e -> this.isSameTypes(e, argTypes));
   }
 
   protected Predicate<ExecutableElement> argsFilter(Class<?>... argTypes) {
-    return sizeFilter(argTypes.length).and(e -> isSameTypes(e, argTypes));
+    return this.sizeFilter(argTypes.length).and(e -> this.isSameTypes(e, argTypes));
   }
 
   public Optional<ExecutableElement> getConstructor(TypeElement element) {
-    return ElementFilter.constructorsIn(element).filter(sizeFilter(0)).findFirst();
+    return ElementFilter.constructorsIn(element).filter(this.sizeFilter(0)).findFirst();
   }
 
   public Optional<ExecutableElement> getConstructor(TypeElement element, Class<?>... argTypes) {
-    return ElementFilter.constructorsIn(element).filter(argsFilter(argTypes)).findFirst();
+    return ElementFilter.constructorsIn(element).filter(this.argsFilter(argTypes)).findFirst();
   }
 
   public Optional<ExecutableElement> getConstructor(TypeElement element, String... argTypes) {
-    return ElementFilter.constructorsIn(element).filter(argsFilter(argTypes)).findFirst();
+    return ElementFilter.constructorsIn(element).filter(this.argsFilter(argTypes)).findFirst();
   }
 
   public Optional<ExecutableElement> getMethod(TypeElement element, String name) {
     return ElementFilter.methodsIn(element)
         .filter(ElementFilter.simpleName(name))
-        .filter(sizeFilter(0))
+        .filter(this.sizeFilter(0))
         .findFirst();
   }
 
@@ -132,7 +132,7 @@ public class CompilationResult implements AutoCloseable {
       TypeElement element, String name, Class<?>... argTypes) {
     return ElementFilter.methodsIn(element)
         .filter(ElementFilter.simpleName(name))
-        .filter(argsFilter(argTypes))
+        .filter(this.argsFilter(argTypes))
         .findFirst();
   }
 
@@ -140,18 +140,18 @@ public class CompilationResult implements AutoCloseable {
       TypeElement element, String name, String... argTypes) {
     return ElementFilter.methodsIn(element)
         .filter(ElementFilter.simpleName(name))
-        .filter(argsFilter(argTypes))
+        .filter(this.argsFilter(argTypes))
         .findFirst();
   }
 
   public Optional<ExecutableElement> findMethod(Class<?> clazz, String name, Class<?>... argTypes) {
-    return getTypeElement(clazz)
+    return this.getTypeElement(clazz)
         .flatMap(
             te ->
-                TypeHierarchy.of(getEnvironment(), te)
+                TypeHierarchy.of(this.getEnvironment(), te)
                     .flatMap(ElementFilter::methodsIn)
                     .filter(ElementFilter.simpleName(name))
-                    .filter(argsFilter(argTypes))
+                    .filter(this.argsFilter(argTypes))
                     .findFirst());
   }
 
@@ -173,35 +173,37 @@ public class CompilationResult implements AutoCloseable {
   }
 
   public boolean isSameType(TypeMirror left, TypeMirror right) {
-    return GigeTypes.isSameType(getEnvironment(), left, right);
+    return GigeTypes.isSameType(this.getEnvironment(), left, right);
   }
 
   public Optional<TypeMirror> getTypeMirror(Class<?> clazz) {
-    return GigeTypes.getTypeMirror(getEnvironment(), clazz);
+    return GigeTypes.getTypeMirror(this.getEnvironment(), clazz);
   }
 
   public Optional<TypeMirror> getTypeMirror(String className) {
-    return GigeTypes.getTypeMirror(getEnvironment(), className);
+    return GigeTypes.getTypeMirror(this.getEnvironment(), className);
   }
 
   public Optional<String> findOutputSource(Class<?> clazz) throws IOException {
-    return findOutputSource(clazz.getCanonicalName());
+    return this.findOutputSource(clazz.getCanonicalName());
   }
 
   public Optional<String> findOutputSource(String className) throws IOException {
     JavaFileObject obj =
-        getManager().getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE);
-    return toString(obj);
+        this.getManager()
+            .getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE);
+    return this.toString(obj);
   }
 
   public Optional<String> findOutputResource(String pkg, String filename) throws IOException {
-    FileObject obj = getManager().getFileForInput(StandardLocation.SOURCE_OUTPUT, pkg, filename);
-    return toString(obj);
+    FileObject obj =
+        this.getManager().getFileForInput(StandardLocation.SOURCE_OUTPUT, pkg, filename);
+    return this.toString(obj);
   }
 
   public void assertEquals(Reader expected, String outputClassName) throws IOException {
     JavaFileObject obj =
-        getManager()
+        this.getManager()
             .getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, outputClassName, Kind.SOURCE);
     assertNotNull(obj);
     try (BufferedReader left = new BufferedReader(expected);
@@ -211,19 +213,19 @@ public class CompilationResult implements AutoCloseable {
   }
 
   public void assertEquals(String expectedSource, Class<?> outputClass) throws IOException {
-    assertEquals(expectedSource, outputClass.getCanonicalName());
+    this.assertEquals(expectedSource, outputClass.getCanonicalName());
   }
 
   public void assertEquals(Path expectedSource, Class<?> outputClass) throws IOException {
-    assertEquals(expectedSource, outputClass.getCanonicalName());
+    this.assertEquals(expectedSource, outputClass.getCanonicalName());
   }
 
   public void assertEquals(String expectedSource, String outputClassName) throws IOException {
-    assertEquals(new StringReader(expectedSource), outputClassName);
+    this.assertEquals(new StringReader(expectedSource), outputClassName);
   }
 
   public void assertEquals(Path expectedSource, String outputClassName) throws IOException {
-    assertEquals(Files.newBufferedReader(expectedSource), outputClassName);
+    this.assertEquals(Files.newBufferedReader(expectedSource), outputClassName);
   }
 
   protected Optional<String> toString(FileObject obj) throws IOException {

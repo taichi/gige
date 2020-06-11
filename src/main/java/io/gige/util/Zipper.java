@@ -67,6 +67,6 @@ public class Zipper<L, R, T> implements Spliterator<T> {
 
   @Override
   public int characteristics() {
-    return lefts.characteristics() & rights.characteristics();
+    return this.lefts.characteristics() & this.rights.characteristics();
   }
 }

@@ -42,10 +42,10 @@ public class OnTheFlyUnit implements Unit {
   public JavaFileObject apply(StandardJavaFileManager t) {
     try {
       final JavaFileObject obj =
-          t.getJavaFileForOutput(StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE, null);
+          t.getJavaFileForOutput(StandardLocation.SOURCE_OUTPUT, this.className, Kind.SOURCE, null);
       try (Writer w = obj.openWriter()) {
         PrintWriter pw = new PrintWriter(w);
-        pw.print(source.toString());
+        pw.print(this.source.toString());
       }
       return obj;
     } catch (IOException e) {

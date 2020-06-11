@@ -15,9 +15,6 @@
  */
 package io.gige.compiler;
 
-import io.gige.compiler.internal.ClasspathContainer;
-import io.gige.compiler.internal.CompilationTaskImpl;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,6 +41,9 @@ import javax.tools.ToolProvider;
 
 import org.eclipse.jdt.internal.compiler.apt.util.EclipseFileManager;
 import org.eclipse.jdt.internal.compiler.batch.FileSystem;
+
+import io.gige.compiler.internal.ClasspathContainer;
+import io.gige.compiler.internal.CompilationTaskImpl;
 
 /** @author taichi */
 public class EclipseCompiler implements JavaCompiler {
@@ -84,7 +84,7 @@ public class EclipseCompiler implements JavaCompiler {
       Locale locale,
       Charset charset) {
     if (this.provided == null) {
-      this.provided = newFileManager(locale, charset);
+      this.provided = this.newFileManager(locale, charset);
       this.filesystem = ClasspathContainer.configure(this.provided);
     }
     return this.provided;
@@ -99,9 +99,9 @@ public class EclipseCompiler implements JavaCompiler {
         @Override
         public void close() throws IOException {
           super.close();
-          filesystem.cleanup();
-          provided = null;
-          filesystem = null;
+          EclipseCompiler.this.filesystem.cleanup();
+          EclipseCompiler.this.provided = null;
+          EclipseCompiler.this.filesystem = null;
         }
       };
     } finally {

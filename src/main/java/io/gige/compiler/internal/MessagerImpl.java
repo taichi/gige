@@ -48,7 +48,7 @@ public class MessagerImpl implements Messager {
    */
   @Override
   public void printMessage(Kind kind, CharSequence msg) {
-    printMessage(kind, msg, null, null, null);
+    this.printMessage(kind, msg, null, null, null);
   }
 
   /*
@@ -60,7 +60,7 @@ public class MessagerImpl implements Messager {
    */
   @Override
   public void printMessage(Kind kind, CharSequence msg, Element e) {
-    printMessage(kind, msg, e, null, null);
+    this.printMessage(kind, msg, e, null, null);
   }
 
   /*
@@ -73,7 +73,7 @@ public class MessagerImpl implements Messager {
    */
   @Override
   public void printMessage(Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
-    printMessage(kind, msg, e, a, null);
+    this.printMessage(kind, msg, e, a, null);
   }
 
   /*
@@ -89,7 +89,7 @@ public class MessagerImpl implements Messager {
   public void printMessage(
       Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
     if (kind == Kind.ERROR) {
-      _processingEnv.setErrorRaised(true);
+      this._processingEnv.setErrorRaised(true);
     }
     AptProblem problem = BaseMessagerImpl.createProblem(kind, msg, e, a, v);
     this.diagnosticListener.report(new DiagnosticAdapter(kind, problem));

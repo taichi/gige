@@ -15,13 +15,13 @@
  */
 package io.gige;
 
-import io.gige.internal.FileUnit;
-import io.gige.internal.OnTheFlyUnit;
-
 import java.util.function.Function;
 
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+
+import io.gige.internal.FileUnit;
+import io.gige.internal.OnTheFlyUnit;
 
 /** @author taichi */
 public interface Unit extends Function<StandardJavaFileManager, JavaFileObject> {

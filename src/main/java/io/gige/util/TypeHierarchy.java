@@ -43,7 +43,7 @@ public class TypeHierarchy implements Spliterator<TypeElement> {
   @Override
   public boolean tryAdvance(Consumer<? super TypeElement> action) {
     action.accept(this.current);
-    this.current = GigeTypes.to(env, this.current.getSuperclass());
+    this.current = GigeTypes.to(this.env, this.current.getSuperclass());
     return this.current != null && this.current.asType().getKind() != TypeKind.NONE;
   }
 

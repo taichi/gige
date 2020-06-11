@@ -35,7 +35,7 @@ public class ResourceProxyJavaFileManager
   @Override
   public FileObject getFileForInput(Location location, String packageName, String relativeName)
       throws IOException {
-    FileObject fo = findFromInput(location, packageName, relativeName);
+    FileObject fo = this.findFromInput(location, packageName, relativeName);
     if (fo == null) {
       fo = super.getFileForInput(location, packageName, relativeName);
     }
@@ -63,7 +63,7 @@ public class ResourceProxyJavaFileManager
   public FileObject getFileForOutput(
       Location location, String packageName, String relativeName, FileObject sibling)
       throws IOException {
-    FileObject fo = findFromInput(location, packageName, relativeName);
+    FileObject fo = this.findFromInput(location, packageName, relativeName);
     if (fo == null) {
       fo = super.getFileForOutput(location, packageName, relativeName, sibling);
     }

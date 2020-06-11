@@ -55,17 +55,17 @@ public class DiagnosticAdapter implements Diagnostic<JavaFileObject> {
 
   @Override
   public long getPosition() {
-    return problem.getSourceStart();
+    return this.problem.getSourceStart();
   }
 
   @Override
   public long getStartPosition() {
-    return getPosition();
+    return this.getPosition();
   }
 
   @Override
   public long getEndPosition() {
-    return problem.getSourceEnd();
+    return this.problem.getSourceEnd();
   }
 
   @Override

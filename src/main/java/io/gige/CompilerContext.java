@@ -90,7 +90,7 @@ public class CompilerContext implements AutoCloseable {
   public CompilerContext(Supplier<JavaCompiler> provider) {
     assertNotNull(provider);
     this.provider = provider;
-    classOutputs = sourceOutputs = Arrays.asList(new File(".gige", provider.toString()));
+    this.classOutputs = this.sourceOutputs = Arrays.asList(new File(".gige", provider.toString()));
   }
 
   public CompilerContext set(Processor... processors) {
@@ -196,7 +196,7 @@ public class CompilerContext implements AutoCloseable {
   public CompilerContext setSourcePath(String... sourcepath) {
     assertNotNull(sourcepath);
     assertTrue(0 < sourcepath.length);
-    this.sourcePaths = toFiles(sourcepath);
+    this.sourcePaths = this.toFiles(sourcepath);
     return this;
   }
 
@@ -210,7 +210,7 @@ public class CompilerContext implements AutoCloseable {
   public CompilerContext setClassOutputs(String... outputs) {
     assertNotNull(outputs);
     assertTrue(0 < outputs.length);
-    this.classOutputs = toFiles(outputs);
+    this.classOutputs = this.toFiles(outputs);
     return this;
   }
 
@@ -224,7 +224,7 @@ public class CompilerContext implements AutoCloseable {
   public CompilerContext setSourceOutputs(String... outputs) {
     assertNotNull(outputs);
     assertTrue(0 < outputs.length);
-    this.sourceOutputs = toFiles(outputs);
+    this.sourceOutputs = this.toFiles(outputs);
     return this;
   }
 
@@ -242,28 +242,28 @@ public class CompilerContext implements AutoCloseable {
     CompositeDiagnosticListener dl = new CompositeDiagnosticListener(this.diagnosticListener);
 
     StandardJavaFileManager manager =
-        compiler.getStandardFileManager(dl, getLocale(), getCharset());
+        compiler.getStandardFileManager(dl, this.getLocale(), this.getCharset());
     manager.setLocation(StandardLocation.SOURCE_PATH, this.sourcePaths);
 
-    Stream.of(classOutputs, sourceOutputs)
+    Stream.of(this.classOutputs, this.sourceOutputs)
         .flatMap(List::stream)
         .filter(f -> f.exists() == false)
         .forEach(f -> f.mkdirs());
-    manager.setLocation(StandardLocation.CLASS_OUTPUT, classOutputs);
-    manager.setLocation(StandardLocation.SOURCE_OUTPUT, sourceOutputs);
+    manager.setLocation(StandardLocation.CLASS_OUTPUT, this.classOutputs);
+    manager.setLocation(StandardLocation.SOURCE_OUTPUT, this.sourceOutputs);
     this.managers.add(manager);
 
     CompilationTask task =
         compiler.getTask(
             this.getOut(),
-            wrap(manager),
+            this.wrap(manager),
             dl,
             this.options,
             Collections.emptyList(),
-            map(manager, this.units));
-    task.setLocale(getLocale());
+            this.map(manager, this.units));
+    task.setLocale(this.getLocale());
 
-    return newResult(dl.getDiagnostics(), manager, processors, task);
+    return this.newResult(dl.getDiagnostics(), manager, this.processors, task);
   }
 
   protected JavaFileManager wrap(StandardJavaFileManager manager) {
@@ -316,7 +316,7 @@ public class CompilerContext implements AutoCloseable {
 
   @Override
   public void close() throws Exception {
-    for (StandardJavaFileManager m : managers) {
+    for (StandardJavaFileManager m : this.managers) {
       m.close();
     }
     this.managers.clear();

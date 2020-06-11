@@ -40,7 +40,7 @@ public class AnnotationProcessingEnv extends BaseProcessingEnvImpl {
     super();
     this._filer = new FilerImpl(fileManager, this);
     this._messager = new MessagerImpl(this, diagnosticListener);
-    this._processorOptions = parseProcessorOptions(options);
+    this._processorOptions = this.parseProcessorOptions(options);
     this._compiler = compiler;
     this._elementUtils = new HackElements(this);
   }

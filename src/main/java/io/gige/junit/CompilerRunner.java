@@ -15,10 +15,6 @@
  */
 package io.gige.junit;
 
-import io.gige.CompilerContext;
-import io.gige.Compilers;
-import io.gige.junit.internal.CompilerInjectionRunner;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +25,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
+
+import io.gige.CompilerContext;
+import io.gige.Compilers;
+import io.gige.junit.internal.CompilerInjectionRunner;
 
 /** @author taichi */
 public class CompilerRunner extends Suite {

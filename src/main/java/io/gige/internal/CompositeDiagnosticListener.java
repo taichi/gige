@@ -31,7 +31,7 @@ public class CompositeDiagnosticListener implements DiagnosticListener<JavaFileO
   final DiagnosticCollector<JavaFileObject> storage = new DiagnosticCollector<>();
 
   public CompositeDiagnosticListener(DiagnosticListener<JavaFileObject> delegate) {
-    this.listeners = Arrays.asList(this.storage, orElse(delegate));
+    this.listeners = Arrays.asList(this.storage, this.orElse(delegate));
   }
 
   protected DiagnosticListener<JavaFileObject> orElse(DiagnosticListener<JavaFileObject> delegate) {
@@ -40,7 +40,7 @@ public class CompositeDiagnosticListener implements DiagnosticListener<JavaFileO
 
   @Override
   public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-    listeners.forEach(dl -> dl.report(diagnostic));
+    this.listeners.forEach(dl -> dl.report(diagnostic));
   }
 
   public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {

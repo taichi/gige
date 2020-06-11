@@ -46,11 +46,11 @@ public class FilerImpl implements Filer {
   }
 
   public void addNewUnit(ICompilationUnit unit) {
-    _env.addNewUnit(unit);
+    this._env.addNewUnit(unit);
   }
 
   public void addNewClassFile(ReferenceBinding binding) {
-    _env.addNewClassFile(binding);
+    this._env.addNewClassFile(binding);
   }
 
   /*
@@ -64,14 +64,14 @@ public class FilerImpl implements Filer {
   public JavaFileObject createClassFile(CharSequence name, Element... originatingElements)
       throws IOException {
     JavaFileObject jfo =
-        _fileManager.getJavaFileForOutput(
+        this._fileManager.getJavaFileForOutput(
             StandardLocation.CLASS_OUTPUT, name.toString(), JavaFileObject.Kind.CLASS, null);
     URI uri = jfo.toUri();
-    if (_createdFiles.contains(uri)) {
+    if (this._createdFiles.contains(uri)) {
       throw new FilerException("Class file already created : " + name); // $NON-NLS-1$
     }
 
-    _createdFiles.add(uri);
+    this._createdFiles.add(uri);
     return new HookedJavaFileObject(jfo, jfo.getName(), name.toString(), this);
   }
 
@@ -91,19 +91,14 @@ public class FilerImpl implements Filer {
       throws IOException {
     validateName(relativeName);
     FileObject fo =
-        _fileManager.getFileForOutput(location, pkg.toString(), relativeName.toString(), null);
+        this._fileManager.getFileForOutput(location, pkg.toString(), relativeName.toString(), null);
     URI uri = fo.toUri();
-    if (_createdFiles.contains(uri)) {
+    if (this._createdFiles.contains(uri)) {
       throw new FilerException(
-          "Resource already created : "
-              + location //$NON-NLS-1$
-              + '/'
-              + pkg
-              + '/'
-              + relativeName);
+          "Resource already created : " + location + '/' + pkg + '/' + relativeName);
     }
 
-    _createdFiles.add(uri);
+    this._createdFiles.add(uri);
     return fo;
   }
 
@@ -155,14 +150,14 @@ public class FilerImpl implements Filer {
   public JavaFileObject createSourceFile(CharSequence name, Element... originatingElements)
       throws IOException {
     JavaFileObject jfo =
-        _fileManager.getJavaFileForOutput(
+        this._fileManager.getJavaFileForOutput(
             StandardLocation.SOURCE_OUTPUT, name.toString(), JavaFileObject.Kind.SOURCE, null);
     URI uri = jfo.toUri();
-    if (_createdFiles.contains(uri)) {
+    if (this._createdFiles.contains(uri)) {
       throw new FilerException("Source file already created : " + name); // $NON-NLS-1$
     }
 
-    _createdFiles.add(uri);
+    this._createdFiles.add(uri);
     // hook the file object's writers to create compilation unit and add to
     // addedUnits()
     return new HookedJavaFileObject(jfo, jfo.getName(), name.toString(), this);
@@ -181,9 +176,11 @@ public class FilerImpl implements Filer {
     validateName(relativeName);
     FileObject fo;
     if (location.isOutputLocation()) {
-      fo = _fileManager.getFileForOutput(location, pkg.toString(), relativeName.toString(), null);
+      fo =
+          this._fileManager.getFileForOutput(
+              location, pkg.toString(), relativeName.toString(), null);
     } else {
-      fo = _fileManager.getFileForInput(location, pkg.toString(), relativeName.toString());
+      fo = this._fileManager.getFileForInput(location, pkg.toString(), relativeName.toString());
     }
 
     if (fo == null) {
@@ -196,17 +193,12 @@ public class FilerImpl implements Filer {
               + relativeName);
     }
     URI uri = fo.toUri();
-    if (_createdFiles.contains(uri)) {
+    if (this._createdFiles.contains(uri)) {
       throw new FilerException(
-          "Resource already created : "
-              + location //$NON-NLS-1$
-              + '/'
-              + pkg
-              + '/'
-              + relativeName);
+          "Resource already created : " + location + '/' + pkg + '/' + relativeName);
     }
 
-    _createdFiles.add(uri);
+    this._createdFiles.add(uri);
     return fo;
   }
 }

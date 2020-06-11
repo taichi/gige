@@ -32,10 +32,10 @@ public class AnnotationProcessorManager extends BaseAnnotationProcessorManager {
   public void configure(Iterable<String> options) {
     for (String s : options) {
       if (s.equalsIgnoreCase("-XprintProcessorInfo")) {
-        _printProcessorInfo = true;
+        this._printProcessorInfo = true;
       }
       if (s.equalsIgnoreCase("-XprintRounds")) {
-        _printRounds = true;
+        this._printRounds = true;
       }
     }
   }
@@ -45,9 +45,9 @@ public class AnnotationProcessorManager extends BaseAnnotationProcessorManager {
     for (Object o : processors) {
       if (o instanceof Processor) {
         Processor p = (Processor) o;
-        p.init(_processingEnv);
+        p.init(this._processingEnv);
         ProcessorInfo pi = new ProcessorInfo(p);
-        _processors.add(pi);
+        this._processors.add(pi);
       }
     }
   }

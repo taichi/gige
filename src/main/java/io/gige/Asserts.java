@@ -16,12 +16,13 @@
 package io.gige;
 
 import static org.junit.Assert.assertEquals;
-import io.gige.util.Zipper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
+
+import io.gige.util.Zipper;
 
 /** @author taichi */
 public interface Asserts {

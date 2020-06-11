@@ -47,10 +47,10 @@ public class CompilerRequestorImpl implements ICompilerRequestor {
   @Override
   public void acceptResult(CompilationResult result) {
     if (result.hasProblems()) {
-      report(Kind.ERROR, result.getErrors());
+      this.report(Kind.ERROR, result.getErrors());
     }
     if (result.hasTasks()) {
-      report(Kind.NOTE, result.getTasks());
+      this.report(Kind.NOTE, result.getTasks());
     }
     try {
       for (ClassFile cf : result.getClassFiles()) {
@@ -73,6 +73,6 @@ public class CompilerRequestorImpl implements ICompilerRequestor {
   protected void report(Kind kind, CategorizedProblem[] problems) {
     Stream.of(problems)
         .map(p -> new DiagnosticAdapter(kind, p))
-        .forEach(diagnosticListener::report);
+        .forEach(this.diagnosticListener::report);
   }
 }
