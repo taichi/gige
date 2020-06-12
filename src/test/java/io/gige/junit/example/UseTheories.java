@@ -15,8 +15,7 @@
  */
 package io.gige.junit.example;
 
-import static org.junit.Assert.assertTrue;
-
+import org.junit.Assert;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -44,7 +43,7 @@ public class UseTheories {
     // you must release external resources
     try (CompilerContext context = new CompilerContext(type)) {
       CompilationResult result = this.setUp(context).setUnits(TestSource.class).compile();
-      assertTrue(result.success());
+      Assert.assertTrue(result.success());
     }
   }
 }

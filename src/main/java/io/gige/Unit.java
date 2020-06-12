@@ -17,21 +17,21 @@ package io.gige;
 
 import java.util.function.Function;
 
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 
 import io.gige.internal.FileUnit;
 import io.gige.internal.OnTheFlyUnit;
 
 /** @author taichi */
-public interface Unit extends Function<StandardJavaFileManager, JavaFileObject> {
+public interface Unit extends Function<JavaFileManager, JavaFileObject> {
 
   static Unit of(String className) {
     return new FileUnit(className);
   }
 
   static Unit of(Class<?> clazz) {
-    return of(clazz.getCanonicalName());
+    return Unit.of(clazz.getCanonicalName());
   }
 
   static Unit of(String className, CharSequence source) {

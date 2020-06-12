@@ -15,10 +15,6 @@
  */
 package io.gige;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -30,19 +26,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -88,53 +76,53 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext(Supplier<JavaCompiler> provider) {
-    assertNotNull(provider);
+    Assert.assertNotNull(provider);
     this.provider = provider;
     this.classOutputs = this.sourceOutputs = Arrays.asList(new File(".gige", provider.toString()));
   }
 
   public CompilerContext set(Processor... processors) {
-    assertNotNull(processors);
-    assertTrue(0 < processors.length);
+    Assert.assertNotNull(processors);
+    Assert.assertTrue(0 < processors.length);
     this.processors = Arrays.asList(processors);
     return this;
   }
 
   public CompilerContext set(DiagnosticListener<JavaFileObject> listener) {
-    assertNotNull(listener);
+    Assert.assertNotNull(listener);
     this.diagnosticListener = listener;
     return this;
   }
 
   public CompilerContext set(Unit... units) {
-    assertNotNull(units);
-    assertTrue(0 < units.length);
+    Assert.assertNotNull(units);
+    Assert.assertTrue(0 < units.length);
     this.units = Arrays.asList(units);
     return this;
   }
 
   public CompilerContext setUnits(String... units) {
-    assertNotNull(units);
-    assertTrue(0 < units.length);
+    Assert.assertNotNull(units);
+    Assert.assertTrue(0 < units.length);
     this.units =
         Stream.of(units)
             .filter(s -> s.isEmpty() == false)
             .map(Unit::of)
             .collect(Collectors.toList());
-    assertFalse(this.units.isEmpty());
+    Assert.assertFalse(this.units.isEmpty());
     return this;
   }
 
   public CompilerContext setUnits(Class<?>... units) {
-    assertNotNull(units);
-    assertTrue(0 < units.length);
+    Assert.assertNotNull(units);
+    Assert.assertTrue(0 < units.length);
     this.units = Stream.of(units).map(Unit::of).collect(Collectors.toList());
-    assertFalse(this.units.isEmpty());
+    Assert.assertFalse(this.units.isEmpty());
     return this;
   }
 
   public CompilerContext setOptions(Iterable<String> options) {
-    assertNotNull(options);
+    Assert.assertNotNull(options);
     this.options = options;
     return this;
   }
@@ -146,8 +134,8 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext setLocale(String locale) {
-    assertNotNull(locale);
-    assertFalse(locale.isEmpty());
+    Assert.assertNotNull(locale);
+    Assert.assertFalse(locale.isEmpty());
     this.locale = new Locale(locale);
     return this;
   }
@@ -163,8 +151,8 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext setCharset(String charset) {
-    assertNotNull(charset);
-    assertFalse(charset.isEmpty());
+    Assert.assertNotNull(charset);
+    Assert.assertFalse(charset.isEmpty());
     this.charset = Charset.forName(charset);
     return this;
   }
@@ -174,7 +162,7 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext set(Writer writer) {
-    assertNotNull(writer);
+    Assert.assertNotNull(writer);
     this.out = writer;
     return this;
   }
@@ -189,57 +177,61 @@ public class CompilerContext implements AutoCloseable {
             .filter(s -> s.isEmpty() == false)
             .map(File::new)
             .collect(Collectors.toList());
-    assertTrue(0 < files.size());
+    Assert.assertTrue(0 < files.size());
     return files;
   }
 
   public CompilerContext setSourcePath(String... sourcepath) {
-    assertNotNull(sourcepath);
-    assertTrue(0 < sourcepath.length);
+    Assert.assertNotNull(sourcepath);
+    Assert.assertTrue(0 < sourcepath.length);
     this.sourcePaths = this.toFiles(sourcepath);
     return this;
   }
 
   public CompilerContext setSourcePath(File... sourcepath) {
-    assertNotNull(sourcepath);
-    assertTrue(0 < sourcepath.length);
+    Assert.assertNotNull(sourcepath);
+    Assert.assertTrue(0 < sourcepath.length);
     this.sourcePaths = Arrays.asList(sourcepath);
     return this;
   }
 
   public CompilerContext setClassOutputs(String... outputs) {
-    assertNotNull(outputs);
-    assertTrue(0 < outputs.length);
+    Assert.assertNotNull(outputs);
+    Assert.assertTrue(0 < outputs.length);
     this.classOutputs = this.toFiles(outputs);
     return this;
   }
 
   public CompilerContext setClassOutputs(File... outputs) {
-    assertNotNull(outputs);
-    assertTrue(0 < outputs.length);
+    Assert.assertNotNull(outputs);
+    Assert.assertTrue(0 < outputs.length);
     this.classOutputs = Arrays.asList(outputs);
     return this;
   }
 
   public CompilerContext setSourceOutputs(String... outputs) {
-    assertNotNull(outputs);
-    assertTrue(0 < outputs.length);
+    Assert.assertNotNull(outputs);
+    Assert.assertTrue(0 < outputs.length);
     this.sourceOutputs = this.toFiles(outputs);
     return this;
   }
 
   public CompilerContext setSourceOutputs(File... outputs) {
-    assertNotNull(outputs);
-    assertTrue(0 < outputs.length);
+    Assert.assertNotNull(outputs);
+    Assert.assertTrue(0 < outputs.length);
     this.sourceOutputs = Arrays.asList(outputs);
     return this;
   }
 
   public CompilationResult compile() throws IOException {
-    assertFalse(this.units.isEmpty());
+    return this.compile(ctx -> {});
+  }
+
+  public CompilationResult compile(AssertionBlock afterThat) throws IOException {
+    Assert.assertFalse(this.units.isEmpty());
 
     JavaCompiler compiler = this.provider.get();
-    CompositeDiagnosticListener dl = new CompositeDiagnosticListener(this.diagnosticListener);
+    var dl = new CompositeDiagnosticListener(this.diagnosticListener);
 
     StandardJavaFileManager manager =
         compiler.getStandardFileManager(dl, this.getLocale(), this.getCharset());
@@ -253,17 +245,28 @@ public class CompilerContext implements AutoCloseable {
     manager.setLocation(StandardLocation.SOURCE_OUTPUT, this.sourceOutputs);
     this.managers.add(manager);
 
-    CompilationTask task =
-        compiler.getTask(
-            this.getOut(),
-            this.wrap(manager),
-            dl,
-            this.options,
-            Collections.emptyList(),
-            this.map(manager, this.units));
-    task.setLocale(this.getLocale());
+    var list = new ArrayList<>(this.processors);
+    var pros = new AssertionProcessor(manager, afterThat);
+    list.add(pros);
 
-    return this.newResult(dl.getDiagnostics(), manager, this.processors, task);
+    var task = this.newTask(compiler, dl, this.wrap(manager), this.map(manager, this.units), list);
+    var result = new CompilationResult(task.call(), manager, dl.getDiagnostics());
+    pros.rethrowOrNothing();
+
+    return result;
+  }
+
+  CompilationTask newTask(
+      JavaCompiler compiler,
+      DiagnosticListener<JavaFileObject> dl,
+      JavaFileManager manager,
+      List<JavaFileObject> units,
+      List<Processor> list) {
+    CompilationTask task =
+        compiler.getTask(this.getOut(), manager, dl, this.options, Collections.emptyList(), units);
+    task.setLocale(this.getLocale());
+    task.setProcessors(list);
+    return task;
   }
 
   protected JavaFileManager wrap(StandardJavaFileManager manager) {
@@ -271,47 +274,8 @@ public class CompilerContext implements AutoCloseable {
     return new ResourceProxyJavaFileManager(manager);
   }
 
-  protected List<JavaFileObject> map(StandardJavaFileManager manager, List<Unit> units) {
+  protected List<JavaFileObject> map(JavaFileManager manager, List<Unit> units) {
     return units.stream().map(t -> t.apply(manager)).collect(Collectors.toList());
-  }
-
-  protected CompilationResult newResult(
-      List<Diagnostic<? extends JavaFileObject>> storage,
-      StandardJavaFileManager manager,
-      List<Processor> processors,
-      CompilationTask task) {
-    List<Processor> list = new ArrayList<>();
-    EnvProcessor env = new EnvProcessor();
-    list.add(env);
-    list.addAll(this.processors);
-    task.setProcessors(list);
-
-    boolean success = task.call();
-
-    return new CompilationResult(success, manager, storage, env.processingEnvironment);
-  }
-
-  @SupportedAnnotationTypes("*")
-  public class EnvProcessor extends AbstractProcessor {
-
-    ProcessingEnvironment processingEnvironment;
-
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-      return SourceVersion.latest();
-    }
-
-    @Override
-    public void init(final ProcessingEnvironment processingEnvironment) {
-      super.init(processingEnvironment);
-      this.processingEnvironment = processingEnvironment;
-    }
-
-    @Override
-    public boolean process(
-        final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-      return false;
-    }
   }
 
   @Override

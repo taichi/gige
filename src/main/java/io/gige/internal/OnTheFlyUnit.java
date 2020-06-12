@@ -20,9 +20,9 @@ import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
-import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import io.gige.Unit;
@@ -39,7 +39,7 @@ public class OnTheFlyUnit implements Unit {
   }
 
   @Override
-  public JavaFileObject apply(StandardJavaFileManager t) {
+  public JavaFileObject apply(JavaFileManager t) {
     try {
       final JavaFileObject obj =
           t.getJavaFileForOutput(StandardLocation.SOURCE_OUTPUT, this.className, Kind.SOURCE, null);

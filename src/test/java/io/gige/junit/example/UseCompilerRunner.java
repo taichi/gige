@@ -15,8 +15,7 @@
  */
 package io.gige.junit.example;
 
-import static org.junit.Assert.assertTrue;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +44,6 @@ public class UseCompilerRunner {
   @Test
   public void test() throws Exception {
     CompilationResult result = this.context.compile();
-    assertTrue(result.success());
+    Assert.assertTrue(result.success());
   }
 }

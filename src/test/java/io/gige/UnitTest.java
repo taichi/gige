@@ -41,19 +41,23 @@ public class UnitTest {
   @Test
   public void test() throws Exception {
     this.context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
-    CompilationResult result = this.context.compile();
+    CompilationResult result =
+        this.context.compile(
+            (ctx -> {
+              FileObject fo =
+                  ctx.getProcessingEnvironment()
+                      .getFiler()
+                      .getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
+              Assert.assertNotNull(fo);
+
+              CharSequence content = fo.getCharContent(true);
+              Assert.assertNotNull(content);
+              Assert.assertTrue(0 < content.length());
+
+              Elements elems = ctx.getProcessingEnvironment().getElementUtils();
+              TypeElement te = elems.getTypeElement("aaa.Bbb");
+              Assert.assertNotNull(te);
+            }));
     Assert.assertTrue(result.success());
-
-    FileObject fo =
-        result.env.getFiler().getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
-    Assert.assertNotNull(fo);
-
-    CharSequence content = fo.getCharContent(true);
-    Assert.assertNotNull(content);
-    Assert.assertTrue(0 < content.length());
-
-    Elements elems = result.env.getElementUtils();
-    TypeElement te = elems.getTypeElement("aaa.Bbb");
-    Assert.assertNotNull(te);
   }
 }

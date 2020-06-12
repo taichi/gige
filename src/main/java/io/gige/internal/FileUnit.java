@@ -19,9 +19,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
-import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import io.gige.Unit;
@@ -35,7 +35,7 @@ public class FileUnit implements Unit {
   }
 
   @Override
-  public JavaFileObject apply(StandardJavaFileManager t) {
+  public JavaFileObject apply(JavaFileManager t) {
     try {
       JavaFileObject jfo =
           t.getJavaFileForInput(StandardLocation.SOURCE_PATH, this.className, Kind.SOURCE);
