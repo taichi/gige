@@ -27,110 +27,109 @@ import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
 /** @author taichi */
-@RunWith(CompilerRunner.class)
+@ExtendWith(CompilerExtension.class)
 public class CompilerContextTest {
 
-  @Compilers CompilerContext context;
-
-  @Before
-  public void setUp() throws Exception {
-    this.context
+  @BeforeEach
+  public void setUp(CompilerContext context) throws Exception {
+    context
         .set(Locale.JAPANESE)
         .setSourcePath("src/test/java", "src/test/resources")
         .set(diag -> System.out.println(diag))
         .setUnits(TestSource.class);
   }
 
-  @Test
-  public void success() throws Exception {
+  @TestTemplate
+  @Compilers
+  public void success(CompilerContext context) throws Exception {
     TestProcessor processor = new TestProcessor();
 
     CompilationResult result =
-        this.context
+        context
             .set(processor)
             .compile(
                 ctx -> {
-                  Assert.assertTrue(processor.called);
-                  Assert.assertNotNull(ctx.getTypeElement(TestSource.class));
-                  Assert.assertNotNull(ctx.getTypeMirror(TestSource.class));
+                  Assertions.assertTrue(processor.called);
+                  Assertions.assertNotNull(ctx.getTypeElement(TestSource.class));
+                  Assertions.assertNotNull(ctx.getTypeMirror(TestSource.class));
 
                   Optional<String> src = ctx.findOutputSource("aaa.bbb.ccc.Ddd");
-                  Assert.assertTrue(src.isPresent());
-                  Assert.assertEquals("package aaa.bbb.ccc;public class Ddd {}", src.get());
+                  Assertions.assertTrue(src.isPresent());
+                  Assertions.assertEquals("package aaa.bbb.ccc;public class Ddd {}", src.get());
 
                   Optional<String> txt = ctx.findOutputResource("", "eee.txt");
-                  Assert.assertTrue(txt.isPresent());
-                  Assert.assertEquals("fff", txt.get());
+                  Assertions.assertTrue(txt.isPresent());
+                  Assertions.assertEquals("fff", txt.get());
                 });
 
-    Assert.assertTrue(result.success());
-    Assert.assertFalse(result.getDiagnostics().isEmpty());
+    Assertions.assertTrue(result.success());
+    Assertions.assertFalse(result.getDiagnostics().isEmpty());
   }
 
-  @Test
-  public void onTheFly() throws Exception {
+  @TestTemplate
+  public void onTheFly(CompilerContext context) throws Exception {
     StringBuilder stb = new StringBuilder();
     stb.append("package test.on.the;");
     stb.append("@io.gige.TestAnnotation ");
     stb.append("public class Fly {}");
 
-    this.context.set(Unit.of("test.on.the.Fly", stb.toString()));
+    context.set(Unit.of("test.on.the.Fly", stb.toString()));
 
     TestProcessor processor = new TestProcessor();
 
     CompilationResult result =
-        this.context
+        context
             .set(processor)
             .compile(
                 ctx -> {
                   Optional<String> src = ctx.findOutputSource("aaa.bbb.ccc.Ddd");
-                  Assert.assertTrue(src.isPresent());
+                  Assertions.assertTrue(src.isPresent());
                 });
 
-    Assert.assertTrue(result.success());
-    Assert.assertTrue(processor.called);
+    Assertions.assertTrue(result.success());
+    Assertions.assertTrue(processor.called);
   }
 
-  @Test
-  public void diagnostics() throws Exception {
+  @TestTemplate
+  public void diagnostics(CompilerContext context) throws Exception {
     DiagnosticProcessor processor = new DiagnosticProcessor();
 
-    CompilationResult result = this.context.set(processor).compile();
+    CompilationResult result = context.set(processor).compile();
 
     List<Diagnostic<? extends JavaFileObject>> msgs = result.getDiagnostics();
-    Assert.assertEquals(3, msgs.size());
+    Assertions.assertEquals(3, msgs.size());
 
-    Assert.assertEquals(Diagnostic.Kind.NOTE, msgs.get(0).getKind());
-    Assert.assertEquals(Diagnostic.Kind.ERROR, msgs.get(1).getKind());
-    Assert.assertEquals(Diagnostic.Kind.WARNING, msgs.get(2).getKind());
+    Assertions.assertEquals(Diagnostic.Kind.NOTE, msgs.get(0).getKind());
+    Assertions.assertEquals(Diagnostic.Kind.ERROR, msgs.get(1).getKind());
+    Assertions.assertEquals(Diagnostic.Kind.WARNING, msgs.get(2).getKind());
 
     Optional<Diagnostic<? extends JavaFileObject>> clz =
         msgs.stream().filter(Diagnostics.filter(TestSource.class)).findFirst();
-    Assert.assertTrue(clz.isPresent());
+    Assertions.assertTrue(clz.isPresent());
 
     Optional<Diagnostic<? extends JavaFileObject>> note =
         msgs.stream().filter(Diagnostics.filter(Kind.NOTE)).findFirst();
-    Assert.assertTrue(note.isPresent());
+    Assertions.assertTrue(note.isPresent());
 
     Optional<Diagnostic<? extends JavaFileObject>> and =
         msgs.stream()
             .filter(Diagnostics.filter(TestSource.class).and(Diagnostics.filter(Kind.ERROR)))
             .findFirst();
-    Assert.assertTrue(and.isPresent());
+    Assertions.assertTrue(and.isPresent());
   }
 
-  @Test
-  public void fields() throws Exception {
+  @TestTemplate
+  public void fields(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
@@ -140,178 +139,178 @@ public class CompilerContextTest {
                       name -> {
                         VariableElement field =
                             ctx.getField(element, name).orElseThrow(AssertionError::new);
-                        Assert.assertEquals(name, field.getSimpleName().toString());
+                        Assertions.assertEquals(name, field.getSimpleName().toString());
                       });
 
               Optional<VariableElement> field = ctx.getField(element, "zzz");
-              Assert.assertFalse(field.isPresent());
+              Assertions.assertFalse(field.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void defaultConstructor() throws Exception {
+  @TestTemplate
+  public void defaultConstructor(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
 
               Optional<ExecutableElement> defc = ctx.getConstructor(element);
-              Assert.assertTrue(defc.isPresent());
+              Assertions.assertTrue(defc.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void noConstructor() throws Exception {
+  @TestTemplate
+  public void noConstructor(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> ctr = ctx.getConstructor(element, Object.class);
-              Assert.assertFalse(ctr.isPresent());
+              Assertions.assertFalse(ctr.isPresent());
 
               Optional<ExecutableElement> ctr2 = ctx.getConstructor(element, "java.lang.Object");
-              Assert.assertFalse(ctr2.isPresent());
+              Assertions.assertFalse(ctr2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void intConstructor() throws Exception {
+  @TestTemplate
+  public void intConstructor(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> ctr = ctx.getConstructor(element, int.class);
-              Assert.assertTrue(ctr.isPresent());
+              Assertions.assertTrue(ctr.isPresent());
 
               Optional<ExecutableElement> ctr2 = ctx.getConstructor(element, "int");
-              Assert.assertTrue(ctr2.isPresent());
+              Assertions.assertTrue(ctr2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void arrayConstructor() throws Exception {
+  @TestTemplate
+  public void arrayConstructor(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> ctr = ctx.getConstructor(element, String[].class);
-              Assert.assertTrue(ctr.isPresent());
+              Assertions.assertTrue(ctr.isPresent());
 
               Optional<ExecutableElement> ctr2 = ctx.getConstructor(element, "java.lang.String[]");
-              Assert.assertTrue(ctr2.isPresent());
+              Assertions.assertTrue(ctr2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void genericConstructor() throws Exception {
+  @TestTemplate
+  public void genericConstructor(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> ctr = ctx.getConstructor(element, List.class);
-              Assert.assertTrue(ctr.isPresent());
+              Assertions.assertTrue(ctr.isPresent());
 
               Optional<ExecutableElement> ctr2 = ctx.getConstructor(element, "java.util.List<T>");
-              Assert.assertTrue(ctr2.isPresent());
+              Assertions.assertTrue(ctr2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void noArgsMethod() throws Exception {
+  @TestTemplate
+  public void noArgsMethod(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
 
               Optional<ExecutableElement> mtd = ctx.getMethod(element, "aaa");
-              Assert.assertTrue(mtd.isPresent());
+              Assertions.assertTrue(mtd.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void noMethod() throws Exception {
+  @TestTemplate
+  public void noMethod(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> ctr = ctx.getMethod(element, "aaa", Object.class);
-              Assert.assertFalse(ctr.isPresent());
+              Assertions.assertFalse(ctr.isPresent());
 
               Optional<ExecutableElement> ctr2 = ctx.getMethod(element, "aaa", "java.lang.Object");
-              Assert.assertFalse(ctr2.isPresent());
+              Assertions.assertFalse(ctr2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void intMethod() throws Exception {
+  @TestTemplate
+  public void intMethod(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
 
               Optional<ExecutableElement> mtd = ctx.getMethod(element, "aaa", int.class);
-              Assert.assertTrue(mtd.isPresent());
+              Assertions.assertTrue(mtd.isPresent());
 
               Optional<ExecutableElement> mtd2 = ctx.getMethod(element, "aaa", "int");
-              Assert.assertTrue(mtd2.isPresent());
+              Assertions.assertTrue(mtd2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void arrayMethod() throws Exception {
+  @TestTemplate
+  public void arrayMethod(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> mtd = ctx.getMethod(element, "setBbb", String[].class);
-              Assert.assertTrue(mtd.isPresent());
+              Assertions.assertTrue(mtd.isPresent());
 
               Optional<ExecutableElement> mtd2 =
                   ctx.getMethod(element, "setBbb", "java.lang.String[]");
-              Assert.assertTrue(mtd2.isPresent());
+              Assertions.assertTrue(mtd2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void genericMethod() throws Exception {
+  @TestTemplate
+  public void genericMethod(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
               Optional<ExecutableElement> mtd = ctx.getMethod(element, "setCcc", List.class);
-              Assert.assertTrue(mtd.isPresent());
+              Assertions.assertTrue(mtd.isPresent());
 
               Optional<ExecutableElement> mtd2 =
                   ctx.getMethod(element, "setCcc", "java.util.List<T>");
-              Assert.assertTrue(mtd2.isPresent());
+              Assertions.assertTrue(mtd2.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void genericMethodWithWhitespace() throws Exception {
+  @TestTemplate
+  public void genericMethodWithWhitespace(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
               TypeElement element =
                   ctx.getTypeElement(TestSource.class).orElseThrow(AssertionError::new);
@@ -319,34 +318,34 @@ public class CompilerContextTest {
               Optional<ExecutableElement> mtd =
                   ctx.getMethod(
                       element, "of", "java.util.List< java.util.Map\t<java.lang.String, T>>");
-              Assert.assertTrue(mtd.isPresent());
+              Assertions.assertTrue(mtd.isPresent());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void typeMirror() throws Exception {
+  @TestTemplate
+  public void typeMirror(CompilerContext context) throws Exception {
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             ctx -> {
-              Assert.assertEquals("boolean", ctx.getTypeMirror(boolean.class).get().toString());
-              Assert.assertEquals("int[]", ctx.getTypeMirror(int[].class).get().toString());
-              Assert.assertEquals(
+              Assertions.assertEquals("boolean", ctx.getTypeMirror(boolean.class).get().toString());
+              Assertions.assertEquals("int[]", ctx.getTypeMirror(int[].class).get().toString());
+              Assertions.assertEquals(
                   "java.lang.String[][]", ctx.getTypeMirror(String[][].class).get().toString());
 
-              Assert.assertEquals(
+              Assertions.assertEquals(
                   "java.lang.String[]", ctx.getTypeMirror("java.lang.String[]").get().toString());
-              Assert.assertEquals(
+              Assertions.assertEquals(
                   "java.lang.String[][][]", ctx.getTypeMirror(String[][][].class).get().toString());
             });
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 
-  @Test
-  public void resourceCopy() throws Exception {
+  @TestTemplate
+  public void resourceCopy(CompilerContext context) throws Exception {
     ResourceProcessor processor = new ResourceProcessor();
-    CompilationResult result = this.context.set(processor).compile();
-    Assert.assertTrue(result.success());
-    Assert.assertTrue(processor.found);
+    CompilationResult result = context.set(processor).compile();
+    Assertions.assertTrue(result.success());
+    Assertions.assertTrue(processor.found);
   }
 }

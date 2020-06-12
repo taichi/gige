@@ -15,12 +15,12 @@
  */
 package io.gige;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
+
+import org.junit.jupiter.api.Assertions;
 
 import io.gige.util.Zipper;
 
@@ -30,7 +30,7 @@ public interface Asserts {
   static void assertEqualsByLine(final String expected, final String actual) {
     try (BufferedReader left = new BufferedReader(new StringReader(expected));
         BufferedReader right = new BufferedReader(new StringReader(actual))) {
-      assertEqualsByLine(left, right);
+      Asserts.assertEqualsByLine(left, right);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -43,7 +43,7 @@ public interface Asserts {
         expected.lines(),
         actual.lines(),
         (l, r) -> {
-          assertEquals("line:" + lineNo[0], l, r);
+          Assertions.assertEquals("line:" + lineNo[0], l, r);
           lineNo[0]++;
           return false;
         });

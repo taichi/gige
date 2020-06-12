@@ -2,31 +2,25 @@ package io.gige.compiler.internal;
 
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.gige.CompilerContext;
 import io.gige.Compilers;
 import io.gige.Unit;
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
-@RunWith(CompilerRunner.class)
+@ExtendWith(CompilerExtension.class)
 public class HackElementsTest {
 
-  @Compilers CompilerContext context;
-
-  @Before
-  public void setUp() throws Exception {
-    this.context
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    context
         .set(Locale.JAPANESE)
         .setSourcePath("src/test/java", "src/test/resources")
         .set(diag -> System.out.println(diag));
-  }
-
-  @Test
-  public void test() throws Exception {
     var annon =
         Unit.of(
             "z.MyAnon",
@@ -35,9 +29,9 @@ public class HackElementsTest {
     var cis = Unit.of("z.MyCls", "package z;\r\n" + "@MyAnon\r\n" + "public class MyCls {}");
     var pros = new MyProcessor();
 
-    var result = this.context.set(annon, cis).set(pros).compile();
-    Assert.assertTrue(result.success());
+    var result = context.set(annon, cis).set(pros).compile();
+    Assertions.assertTrue(result.success());
     var diags = result.getDiagnostics();
-    Assert.assertTrue(diags.isEmpty());
+    Assertions.assertTrue(diags.isEmpty());
   }
 }

@@ -15,8 +15,7 @@
  */
 package io.gige;
 
-import static java.lang.annotation.ElementType.FIELD;
-import io.gige.compiler.EclipseCompiler;
+import static java.lang.annotation.ElementType.METHOD;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,9 +25,11 @@ import java.util.function.Supplier;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import io.gige.compiler.EclipseCompiler;
+
 /** @author taichi */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(FIELD)
+@Target(METHOD)
 public @interface Compilers {
 
   Type[] value() default {Type.Standard, Type.Eclipse};

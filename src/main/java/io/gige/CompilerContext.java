@@ -39,7 +39,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import io.gige.internal.CompositeDiagnosticListener;
 import io.gige.internal.ResourceProxyJavaFileManager;
@@ -76,66 +76,66 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext(Supplier<JavaCompiler> provider) {
-    Assert.assertNotNull(provider);
+    Assertions.assertNotNull(provider);
     this.provider = provider;
     this.classOutputs = this.sourceOutputs = Arrays.asList(new File(".gige", provider.toString()));
   }
 
   public CompilerContext set(Processor... processors) {
-    Assert.assertNotNull(processors);
-    Assert.assertTrue(0 < processors.length);
+    Assertions.assertNotNull(processors);
+    Assertions.assertTrue(0 < processors.length);
     this.processors = Arrays.asList(processors);
     return this;
   }
 
   public CompilerContext set(DiagnosticListener<JavaFileObject> listener) {
-    Assert.assertNotNull(listener);
+    Assertions.assertNotNull(listener);
     this.diagnosticListener = listener;
     return this;
   }
 
   public CompilerContext set(Unit... units) {
-    Assert.assertNotNull(units);
-    Assert.assertTrue(0 < units.length);
+    Assertions.assertNotNull(units);
+    Assertions.assertTrue(0 < units.length);
     this.units = Arrays.asList(units);
     return this;
   }
 
   public CompilerContext setUnits(String... units) {
-    Assert.assertNotNull(units);
-    Assert.assertTrue(0 < units.length);
+    Assertions.assertNotNull(units);
+    Assertions.assertTrue(0 < units.length);
     this.units =
         Stream.of(units)
             .filter(s -> s.isEmpty() == false)
             .map(Unit::of)
             .collect(Collectors.toList());
-    Assert.assertFalse(this.units.isEmpty());
+    Assertions.assertFalse(this.units.isEmpty());
     return this;
   }
 
   public CompilerContext setUnits(Class<?>... units) {
-    Assert.assertNotNull(units);
-    Assert.assertTrue(0 < units.length);
+    Assertions.assertNotNull(units);
+    Assertions.assertTrue(0 < units.length);
     this.units = Stream.of(units).map(Unit::of).collect(Collectors.toList());
-    Assert.assertFalse(this.units.isEmpty());
+    Assertions.assertFalse(this.units.isEmpty());
     return this;
   }
 
   public CompilerContext setOptions(Iterable<String> options) {
-    Assert.assertNotNull(options);
+    Assertions.assertNotNull(options);
     this.options = options;
     return this;
   }
 
   public CompilerContext set(Locale locale) {
-    Assert.assertNotNull(locale);
+    Assertions.assertNotNull(locale);
     this.locale = locale;
     return this;
   }
 
   public CompilerContext setLocale(String locale) {
-    Assert.assertNotNull(locale);
-    Assert.assertFalse(locale.isEmpty());
+    Assertions.assertNotNull(locale);
+    Assertions.assertFalse(locale.isEmpty());
     this.locale = new Locale(locale);
     return this;
   }
@@ -145,14 +145,14 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext set(Charset charset) {
-    Assert.assertNotNull(charset);
+    Assertions.assertNotNull(charset);
     this.charset = charset;
     return this;
   }
 
   public CompilerContext setCharset(String charset) {
-    Assert.assertNotNull(charset);
-    Assert.assertFalse(charset.isEmpty());
+    Assertions.assertNotNull(charset);
+    Assertions.assertFalse(charset.isEmpty());
     this.charset = Charset.forName(charset);
     return this;
   }
@@ -162,7 +162,7 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilerContext set(Writer writer) {
-    Assert.assertNotNull(writer);
+    Assertions.assertNotNull(writer);
     this.out = writer;
     return this;
   }
@@ -177,48 +177,48 @@ public class CompilerContext implements AutoCloseable {
             .filter(s -> s.isEmpty() == false)
             .map(File::new)
             .collect(Collectors.toList());
-    Assert.assertTrue(0 < files.size());
+    Assertions.assertTrue(0 < files.size());
     return files;
   }
 
   public CompilerContext setSourcePath(String... sourcepath) {
-    Assert.assertNotNull(sourcepath);
-    Assert.assertTrue(0 < sourcepath.length);
+    Assertions.assertNotNull(sourcepath);
+    Assertions.assertTrue(0 < sourcepath.length);
     this.sourcePaths = this.toFiles(sourcepath);
     return this;
   }
 
   public CompilerContext setSourcePath(File... sourcepath) {
-    Assert.assertNotNull(sourcepath);
-    Assert.assertTrue(0 < sourcepath.length);
+    Assertions.assertNotNull(sourcepath);
+    Assertions.assertTrue(0 < sourcepath.length);
     this.sourcePaths = Arrays.asList(sourcepath);
     return this;
   }
 
   public CompilerContext setClassOutputs(String... outputs) {
-    Assert.assertNotNull(outputs);
-    Assert.assertTrue(0 < outputs.length);
+    Assertions.assertNotNull(outputs);
+    Assertions.assertTrue(0 < outputs.length);
     this.classOutputs = this.toFiles(outputs);
     return this;
   }
 
   public CompilerContext setClassOutputs(File... outputs) {
-    Assert.assertNotNull(outputs);
-    Assert.assertTrue(0 < outputs.length);
+    Assertions.assertNotNull(outputs);
+    Assertions.assertTrue(0 < outputs.length);
     this.classOutputs = Arrays.asList(outputs);
     return this;
   }
 
   public CompilerContext setSourceOutputs(String... outputs) {
-    Assert.assertNotNull(outputs);
-    Assert.assertTrue(0 < outputs.length);
+    Assertions.assertNotNull(outputs);
+    Assertions.assertTrue(0 < outputs.length);
     this.sourceOutputs = this.toFiles(outputs);
     return this;
   }
 
   public CompilerContext setSourceOutputs(File... outputs) {
-    Assert.assertNotNull(outputs);
-    Assert.assertTrue(0 < outputs.length);
+    Assertions.assertNotNull(outputs);
+    Assertions.assertTrue(0 < outputs.length);
     this.sourceOutputs = Arrays.asList(outputs);
     return this;
   }
@@ -228,7 +228,7 @@ public class CompilerContext implements AutoCloseable {
   }
 
   public CompilationResult compile(AssertionBlock afterThat) throws IOException {
-    Assert.assertFalse(this.units.isEmpty());
+    Assertions.assertFalse(this.units.isEmpty());
 
     JavaCompiler compiler = this.provider.get();
     var dl = new CompositeDiagnosticListener(this.diagnosticListener);

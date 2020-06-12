@@ -15,35 +15,29 @@
  */
 package io.gige.junit.example;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.gige.CompilationResult;
 import io.gige.CompilerContext;
 import io.gige.Compilers;
 import io.gige.TestSource;
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
 /** @author taichi */
-@RunWith(CompilerRunner.class)
+@ExtendWith(CompilerExtension.class)
 public class UseCompilerRunner {
 
-  @Compilers CompilerContext context;
-
-  @Before
-  public void setUp() {
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
     // CompilerRunner close CompilerContext automatically.
-    this.context
+    context
         .setSourcePath("src/test/java", "src/test/resources")
         .set(diag -> System.out.println(diag))
         .setUnits(TestSource.class);
-  }
-
-  @Test
-  public void test() throws Exception {
-    CompilationResult result = this.context.compile();
-    Assert.assertTrue(result.success());
+    CompilationResult result = context.compile();
+    Assertions.assertTrue(result.success());
   }
 }

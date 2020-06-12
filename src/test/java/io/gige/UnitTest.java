@@ -20,44 +20,38 @@ import javax.lang.model.util.Elements;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
 /** @author taichi */
-@RunWith(CompilerRunner.class)
+@ExtendWith(CompilerExtension.class)
 public class UnitTest {
 
-  @Compilers CompilerContext context;
-
-  @Before
-  public void setUp() throws Exception {
-    this.context.setSourcePath("src/test/java").set(System.out::println);
-  }
-
-  @Test
-  public void test() throws Exception {
-    this.context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    context.setSourcePath("src/test/java").set(System.out::println);
+    context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
     CompilationResult result =
-        this.context.compile(
+        context.compile(
             (ctx -> {
               FileObject fo =
                   ctx.getProcessingEnvironment()
                       .getFiler()
                       .getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
-              Assert.assertNotNull(fo);
+              Assertions.assertNotNull(fo);
 
               CharSequence content = fo.getCharContent(true);
-              Assert.assertNotNull(content);
-              Assert.assertTrue(0 < content.length());
+              Assertions.assertNotNull(content);
+              Assertions.assertTrue(0 < content.length());
 
               Elements elems = ctx.getProcessingEnvironment().getElementUtils();
               TypeElement te = elems.getTypeElement("aaa.Bbb");
-              Assert.assertNotNull(te);
+              Assertions.assertNotNull(te);
             }));
-    Assert.assertTrue(result.success());
+    Assertions.assertTrue(result.success());
   }
 }

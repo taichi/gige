@@ -22,34 +22,28 @@ import java.util.stream.Stream;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.gige.CompilerContext;
 import io.gige.Compilers;
 import io.gige.TestSource;
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
 /** @author taichi */
-@RunWith(CompilerRunner.class)
-public class TypeHierarchyTest {
+@ExtendWith(CompilerExtension.class)
+public class TypeHierarchyTest {;
 
-  @Compilers CompilerContext context;
-
-  @Before
-  public void setUp() throws Exception {
-    this.context
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    context
         .set(Locale.JAPANESE)
         .setSourcePath("src/test/java")
         .setUnits(TestSource.class)
         .set(diag -> System.out.println(diag));
-  }
-
-  @Test
-  public void test() throws Exception {
-    this.context.compile(
+    context.compile(
         ctx -> {
           TypeElement element = ctx.getTypeElement(HashMap.class).orElseThrow(AssertionError::new);
           Stream<String> actual =
@@ -62,7 +56,7 @@ public class TypeHierarchyTest {
                   expected,
                   actual,
                   (l, r) -> {
-                    Assert.assertEquals(l, r);
+                    Assertions.assertEquals(l, r);
                     return l + " " + r;
                   })
               .forEach(System.out::println);

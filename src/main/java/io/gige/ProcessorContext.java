@@ -23,7 +23,7 @@ import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import io.gige.util.ElementFilter;
 import io.gige.util.GigeTypes;
@@ -183,7 +183,7 @@ public class ProcessorContext {
     JavaFileObject obj =
         this.getManager()
             .getJavaFileForInput(StandardLocation.SOURCE_OUTPUT, outputClassName, Kind.SOURCE);
-    Assert.assertNotNull(obj);
+    Assertions.assertNotNull(obj);
     try (BufferedReader left = new BufferedReader(expected);
         BufferedReader right = new BufferedReader(obj.openReader(true))) {
       Asserts.assertEqualsByLine(left, right);

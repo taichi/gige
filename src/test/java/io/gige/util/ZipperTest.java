@@ -15,13 +15,12 @@
  */
 package io.gige.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** @author taichi */
 public class ZipperTest {
@@ -36,9 +35,9 @@ public class ZipperTest {
                   return l + " " + r;
                 })
             .collect(Collectors.toList());
-    assertEquals("1 10", zipped.get(0));
-    assertEquals("2 20", zipped.get(1));
-    assertEquals("3 30", zipped.get(2));
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
+    Assertions.assertEquals("3 30", zipped.get(2));
   }
 
   @Test
@@ -51,8 +50,8 @@ public class ZipperTest {
                   return l + " " + r;
                 })
             .collect(Collectors.toList());
-    assertEquals("1 10", zipped.get(0));
-    assertEquals("2 20", zipped.get(1));
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
   }
 
   @Test
@@ -65,7 +64,7 @@ public class ZipperTest {
                   return l + " " + r;
                 })
             .collect(Collectors.toList());
-    assertEquals("1 10", zipped.get(0));
-    assertEquals("2 20", zipped.get(1));
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
   }
 }

@@ -15,30 +15,28 @@
  */
 package io.gige.junit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.gige.CompilerContext;
 import io.gige.Compilers;
 
 /** @author taichi */
-@RunWith(CompilerRunner.class)
+@ExtendWith(CompilerExtension.class)
 public class InjectMulti {
-  @Compilers CompilerContext context;
   static int i = 0;
 
-  @Test
-  public void runningTests() throws Exception {
-    i++;
-    assertNotNull(this.context);
+  @TestTemplate
+  @Compilers
+  public void runningTests(CompilerContext context) throws Exception {
+    InjectMulti.i++;
+    Assertions.assertNotNull(context);
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() {
-    assertEquals(2, i);
+    Assertions.assertEquals(2, InjectMulti.i);
   }
 }
