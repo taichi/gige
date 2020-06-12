@@ -25,6 +25,7 @@ import javax.tools.JavaFileObject;
 
 import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
+import org.eclipse.jdt.internal.compiler.apt.model.ElementsImpl;
 import org.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 
 /** @author taichi */
@@ -42,7 +43,7 @@ public class AnnotationProcessingEnv extends BaseProcessingEnvImpl {
     this._messager = new MessagerImpl(this, diagnosticListener);
     this._processorOptions = this.parseProcessorOptions(options);
     this._compiler = compiler;
-    this._elementUtils = new HackElements(this);
+    this._elementUtils = ElementsImpl.create(this);
   }
 
   public void setLocale(Locale locale) {
