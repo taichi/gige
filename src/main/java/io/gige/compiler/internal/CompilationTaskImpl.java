@@ -106,9 +106,9 @@ public class CompilationTaskImpl implements CompilationTask {
   protected Main parseOptions(
       PrintWriter out, Iterable<String> argv, Iterable<? extends JavaFileObject> compilationUnits) {
     Map<String, String> defaults = new HashMap<>();
-    defaults.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8);
-    defaults.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8);
-    defaults.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_8);
+    defaults.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_11);
+    defaults.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_11);
+    defaults.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_11);
 
     Stream<String> files =
         Stream.concat(

@@ -116,7 +116,7 @@ public class EclipseCompiler implements JavaCompiler {
 
   @Override
   public Set<SourceVersion> getSourceVersions() {
-    return EnumSet.of(SourceVersion.RELEASE_8);
+    return EnumSet.allOf(SourceVersion.class);
   }
 
   @Override
