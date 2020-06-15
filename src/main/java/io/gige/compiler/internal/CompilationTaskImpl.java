@@ -168,6 +168,6 @@ public class CompilationTaskImpl implements CompilationTask {
 
   @Override
   public void addModules(Iterable<String> moduleNames) {
-    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("use --add-modules");
   }
 }
