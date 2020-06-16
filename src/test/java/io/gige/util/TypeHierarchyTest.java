@@ -15,13 +15,6 @@
  */
 package io.gige.util;
 
-import static org.junit.Assert.assertEquals;
-import io.gige.CompilationResult;
-import io.gige.CompilerContext;
-import io.gige.Compilers;
-import io.gige.TestSource;
-import io.gige.junit.CompilerRunner;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.stream.Stream;
@@ -29,46 +22,44 @@ import java.util.stream.Stream;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-/**
- * @author taichi
- */
-@RunWith(CompilerRunner.class)
-public class TypeHierarchyTest {
+import io.gige.CompilerContext;
+import io.gige.Compilers;
+import io.gige.TestSource;
+import io.gige.junit.CompilerExtension;
 
-	@Compilers
-	CompilerContext context;
+/** @author taichi */
+@ExtendWith(CompilerExtension.class)
+public class TypeHierarchyTest {;
 
-	@Before
-	public void setUp() throws Exception {
-		this.context
-				.set(Locale.JAPANESE)
-				.setSourcePath("src/test/java")
-				.setUnits(TestSource.class)
-				.set(
-						diag -> System.out.println(diag));
-	}
-
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
-
-		TypeElement element = result
-				.getTypeElement(HashMap.class)
-				.orElseThrow(AssertionError::new);
-		Stream<String> actual = TypeHierarchy
-				.of(result.getEnvironment(), element)
-				.map(TypeElement::getQualifiedName)
-				.map(Name::toString);
-		Stream<String> expected = Stream.of("java.util.HashMap",
-				"java.util.AbstractMap", "java.lang.Object");
-		Zipper.of(expected, actual, (l, r) -> {
-			assertEquals(l, r);
-			return l + " " + r;
-		}).forEach(System.out::println);
-	}
-
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    context
+        .set(Locale.JAPANESE)
+        .setSourcePath("src/test/java")
+        .setUnits(TestSource.class)
+        .set(diag -> System.out.println(diag));
+    context.compile(
+        ctx -> {
+          TypeElement element = ctx.getTypeElement(HashMap.class).orElseThrow(AssertionError::new);
+          Stream<String> actual =
+              TypeHierarchy.of(ctx.getProcessingEnvironment(), element)
+                  .map(TypeElement::getQualifiedName)
+                  .map(Name::toString);
+          Stream<String> expected =
+              Stream.of("java.util.HashMap", "java.util.AbstractMap", "java.lang.Object");
+          Zipper.of(
+                  expected,
+                  actual,
+                  (l, r) -> {
+                    Assertions.assertEquals(l, r);
+                    return l + " " + r;
+                  })
+              .forEach(System.out::println);
+        });
+  }
 }

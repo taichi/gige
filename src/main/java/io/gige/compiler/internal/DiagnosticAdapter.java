@@ -24,85 +24,82 @@ import javax.tools.JavaFileObject;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.apt.util.EclipseFileObject;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class DiagnosticAdapter implements Diagnostic<JavaFileObject> {
 
-	final Kind kind;
-	final IProblem problem;
+  final Kind kind;
+  final IProblem problem;
 
-	public DiagnosticAdapter(Kind kind, IProblem problem) {
-		this.kind = kind;
-		this.problem = problem;
-	}
+  public DiagnosticAdapter(Kind kind, IProblem problem) {
+    this.kind = kind;
+    this.problem = problem;
+  }
 
-	@Override
-	public javax.tools.Diagnostic.Kind getKind() {
-		return this.kind;
-	}
+  @Override
+  public javax.tools.Diagnostic.Kind getKind() {
+    return this.kind;
+  }
 
-	@Override
-	public JavaFileObject getSource() {
-		char[] filename = this.problem.getOriginatingFileName();
-		if (filename == null) {
-			return null;
-		}
-		File file = new File(new String(filename));
-		if (file.exists()) {
-			return new EclipseFileObject(null, file.toURI(),
-					JavaFileObject.Kind.SOURCE, null);
-		}
-		return null;
-	}
+  @Override
+  public JavaFileObject getSource() {
+    char[] filename = this.problem.getOriginatingFileName();
+    if (filename == null) {
+      return null;
+    }
+    File file = new File(new String(filename));
+    if (file.exists()) {
+      return new EclipseFileObject(null, file.toURI(), JavaFileObject.Kind.SOURCE, null);
+    }
+    return null;
+  }
 
-	@Override
-	public long getPosition() {
-		return problem.getSourceStart();
-	}
+  @Override
+  public long getPosition() {
+    return this.problem.getSourceStart();
+  }
 
-	@Override
-	public long getStartPosition() {
-		return getPosition();
-	}
+  @Override
+  public long getStartPosition() {
+    return this.getPosition();
+  }
 
-	@Override
-	public long getEndPosition() {
-		return problem.getSourceEnd();
-	}
+  @Override
+  public long getEndPosition() {
+    return this.problem.getSourceEnd();
+  }
 
-	@Override
-	public long getLineNumber() {
-		return this.problem.getSourceLineNumber();
-	}
+  @Override
+  public long getLineNumber() {
+    return this.problem.getSourceLineNumber();
+  }
 
-	@Override
-	public long getColumnNumber() {
-		return NOPOS;
-	}
+  @Override
+  public long getColumnNumber() {
+    return NOPOS;
+  }
 
-	@Override
-	public String getCode() {
-		return null;
-	}
+  @Override
+  public String getCode() {
+    return null;
+  }
 
-	@Override
-	public String getMessage(Locale locale) {
-		return this.problem.getMessage();
-	}
+  @Override
+  public String getMessage(Locale locale) {
+    return this.problem.getMessage();
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder stb = new StringBuilder();
-		stb.append(this.problem.toString());
-		char[] filename = this.problem.getOriginatingFileName();
-		if (filename != null) {
-			stb.append(" at ");
-			stb.append(new String(filename));
-			stb.append(" line:[");
-			stb.append(this.problem.getSourceLineNumber());
-			stb.append("]");
-		}
-		return stb.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder stb = new StringBuilder();
+    stb.append(this.problem.toString());
+    char[] filename = this.problem.getOriginatingFileName();
+    if (filename != null) {
+      stb.append(" at ");
+      stb.append(new String(filename));
+      stb.append(" line:[");
+      stb.append(this.problem.getSourceLineNumber());
+      stb.append("]");
+    }
+    return stb.toString();
+  }
 }

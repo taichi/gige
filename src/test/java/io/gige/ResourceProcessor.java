@@ -27,43 +27,41 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @SupportedAnnotationTypes("io.gige.TestAnnotation")
 public class ResourceProcessor extends AbstractProcessor {
 
-	boolean found;
+  boolean found;
 
-	@Override
-	public SourceVersion getSupportedSourceVersion() {
-		return SourceVersion.latest();
-	}
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latest();
+  }
 
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations,
-			RoundEnvironment env) {
-		if (env.processingOver()) {
-			return false;
-		}
+  @Override
+  public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+    if (env.processingOver()) {
+      return false;
+    }
 
-		Filer filer = this.processingEnv.getFiler();
+    Filer filer = this.processingEnv.getFiler();
 
-		try {
-			FileObject fo = filer.getResource(StandardLocation.CLASS_OUTPUT,
-					"aaa", // jdk
-							// compiler
-							// needs
-							// legal
-							// package
-							// name.
-					"META-INF/foo.txt");
-			this.found = fo != null;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    try {
+      FileObject fo =
+          filer.getResource(
+              StandardLocation.CLASS_OUTPUT,
+              "aaa", // jdk
+              // compiler
+              // needs
+              // legal
+              // package
+              // name.
+              "META-INF/foo.txt");
+      this.found = fo != null;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-		return false;
-	}
-
+    return false;
+  }
 }

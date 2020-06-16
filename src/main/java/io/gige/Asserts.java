@@ -15,37 +15,37 @@
  */
 package io.gige;
 
-import static org.junit.Assert.assertEquals;
-import io.gige.util.Zipper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 
-/**
- * @author taichi
- */
+import org.junit.jupiter.api.Assertions;
+
+import io.gige.util.Zipper;
+
+/** @author taichi */
 public interface Asserts {
 
-	static void assertEqualsByLine(final String expected, final String actual) {
-		try (BufferedReader left = new BufferedReader(
-				new StringReader(expected));
-				BufferedReader right = new BufferedReader(
-						new StringReader(actual))) {
-			assertEqualsByLine(left, right);
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
+  static void assertEqualsByLine(final String expected, final String actual) {
+    try (BufferedReader left = new BufferedReader(new StringReader(expected));
+        BufferedReader right = new BufferedReader(new StringReader(actual))) {
+      Asserts.assertEqualsByLine(left, right);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 
-	static void assertEqualsByLine(final BufferedReader expected,
-			final BufferedReader actual) throws IOException {
-		int[] lineNo = { 0 };
-		Zipper.of(expected.lines(), actual.lines(), (l, r) -> {
-			assertEquals("line:" + lineNo[0], l, r);
-			lineNo[0]++;
-			return false;
-		});
-	}
+  static void assertEqualsByLine(final BufferedReader expected, final BufferedReader actual)
+      throws IOException {
+    int[] lineNo = {0};
+    Zipper.of(
+        expected.lines(),
+        actual.lines(),
+        (l, r) -> {
+          Assertions.assertEquals("line:" + lineNo[0], l, r);
+          lineNo[0]++;
+          return false;
+        });
+  }
 }

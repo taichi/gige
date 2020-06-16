@@ -20,39 +20,36 @@ import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
+import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
-import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import io.gige.Unit;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class OnTheFlyUnit implements Unit {
-	final String className;
+  final String className;
 
-	final CharSequence source;
+  final CharSequence source;
 
-	public OnTheFlyUnit(String className, CharSequence source) {
-		this.className = className;
-		this.source = source;
-	}
+  public OnTheFlyUnit(String className, CharSequence source) {
+    this.className = className;
+    this.source = source;
+  }
 
-	@Override
-	public JavaFileObject apply(StandardJavaFileManager t) {
-		try {
-			final JavaFileObject obj = t.getJavaFileForOutput(
-					StandardLocation.SOURCE_OUTPUT, className, Kind.SOURCE,
-					null);
-			try (Writer w = obj.openWriter()) {
-				PrintWriter pw = new PrintWriter(w);
-				pw.print(source.toString());
-			}
-			return obj;
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
+  @Override
+  public JavaFileObject apply(JavaFileManager t) {
+    try {
+      final JavaFileObject obj =
+          t.getJavaFileForOutput(StandardLocation.SOURCE_OUTPUT, this.className, Kind.SOURCE, null);
+      try (Writer w = obj.openWriter()) {
+        PrintWriter pw = new PrintWriter(w);
+        pw.print(this.source.toString());
+      }
+      return obj;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 }

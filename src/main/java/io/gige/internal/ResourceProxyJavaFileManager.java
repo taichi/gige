@@ -24,54 +24,49 @@ import javax.tools.ForwardingJavaFileManager;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class ResourceProxyJavaFileManager
-		extends ForwardingJavaFileManager<StandardJavaFileManager> {
+    extends ForwardingJavaFileManager<StandardJavaFileManager> {
 
-	public ResourceProxyJavaFileManager(StandardJavaFileManager fileManager) {
-		super(fileManager);
-	}
+  public ResourceProxyJavaFileManager(StandardJavaFileManager fileManager) {
+    super(fileManager);
+  }
 
-	@Override
-	public FileObject getFileForInput(Location location, String packageName,
-			String relativeName) throws IOException {
-		FileObject fo = findFromInput(location, packageName, relativeName);
-		if (fo == null) {
-			fo = super.getFileForInput(location, packageName, relativeName);
-		}
-		return fo;
-	}
+  @Override
+  public FileObject getFileForInput(Location location, String packageName, String relativeName)
+      throws IOException {
+    FileObject fo = this.findFromInput(location, packageName, relativeName);
+    if (fo == null) {
+      fo = super.getFileForInput(location, packageName, relativeName);
+    }
+    return fo;
+  }
 
-	protected FileObject findFromInput(Location location, String packageName,
-			String relativeName) throws IOException {
-		if (location == StandardLocation.CLASS_OUTPUT) {
-			for (StandardLocation sl : Arrays.asList(
-					StandardLocation.SOURCE_PATH,
-					StandardLocation.CLASS_PATH)) {
-				try {
-					FileObject fo = super.getFileForInput(sl, packageName,
-							relativeName);
-					if (fo != null) {
-						return fo;
-					}
-				} catch (FileNotFoundException ignore) {
-				}
-			}
-		}
-		return null;
-	}
+  protected FileObject findFromInput(Location location, String packageName, String relativeName)
+      throws IOException {
+    if (location == StandardLocation.CLASS_OUTPUT) {
+      for (StandardLocation sl :
+          Arrays.asList(StandardLocation.SOURCE_PATH, StandardLocation.CLASS_PATH)) {
+        try {
+          FileObject fo = super.getFileForInput(sl, packageName, relativeName);
+          if (fo != null) {
+            return fo;
+          }
+        } catch (FileNotFoundException ignore) {
+        }
+      }
+    }
+    return null;
+  }
 
-	@Override
-	public FileObject getFileForOutput(Location location, String packageName,
-			String relativeName, FileObject sibling)
-					throws IOException {
-		FileObject fo = findFromInput(location, packageName, relativeName);
-		if (fo == null) {
-			fo = super.getFileForOutput(location, packageName, relativeName,
-					sibling);
-		}
-		return fo;
-	}
+  @Override
+  public FileObject getFileForOutput(
+      Location location, String packageName, String relativeName, FileObject sibling)
+      throws IOException {
+    FileObject fo = this.findFromInput(location, packageName, relativeName);
+    if (fo == null) {
+      fo = super.getFileForOutput(location, packageName, relativeName, sibling);
+    }
+    return fo;
+  }
 }

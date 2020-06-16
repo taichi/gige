@@ -15,51 +15,43 @@
  */
 package io.gige;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
-/**
- * @author taichi
- */
-@RunWith(CompilerRunner.class)
+/** @author taichi */
+@ExtendWith(CompilerExtension.class)
 public class UnitTest {
 
-	@Compilers
-	CompilerContext context;
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    context.setSourcePath("src/test/java").set(System.out::println);
+    context.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
+    CompilationResult result =
+        context.compile(
+            (ctx -> {
+              FileObject fo =
+                  ctx.getProcessingEnvironment()
+                      .getFiler()
+                      .getResource(StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
+              Assertions.assertNotNull(fo);
 
-	@Before
-	public void setUp() throws Exception {
-		this.context.setSourcePath("src/test/java").set(System.out::println);
-	}
+              CharSequence content = fo.getCharContent(true);
+              Assertions.assertNotNull(content);
+              Assertions.assertTrue(0 < content.length());
 
-	@Test
-	public void test() throws Exception {
-		this.context
-				.set(Unit.of("aaa.Bbb", "package aaa;\npublic class Bbb {}"));
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
-
-		FileObject fo = result.env.getFiler().getResource(
-				StandardLocation.SOURCE_OUTPUT, "aaa", "Bbb.java");
-		assertNotNull(fo);
-
-		CharSequence content = fo.getCharContent(true);
-		assertNotNull(content);
-		assertTrue(0 < content.length());
-
-		Elements elems = result.env.getElementUtils();
-		TypeElement te = elems.getTypeElement("aaa.Bbb");
-		assertNotNull(te);
-	}
+              Elements elems = ctx.getProcessingEnvironment().getElementUtils();
+              TypeElement te = elems.getTypeElement("aaa.Bbb");
+              Assertions.assertNotNull(te);
+            }));
+    Assertions.assertTrue(result.success());
+  }
 }

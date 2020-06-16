@@ -15,43 +15,43 @@
  */
 package io.gige.compiler.internal;
 
-import static java.util.stream.StreamSupport.stream;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
 import org.eclipse.jdt.internal.compiler.batch.FileSystem;
+import org.eclipse.jdt.internal.compiler.util.Util;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class ClasspathContainer extends FileSystem {
 
-	protected ClasspathContainer(Classpath[] paths) {
-		super(paths, null, true);
-	}
+  protected ClasspathContainer(Classpath[] paths) {
+    super(paths, null, true);
+  }
 
-	public static FileSystem configure(
-			StandardJavaFileManager standardManager) {
-		Classpath[] paths = Arrays
-				.asList(StandardLocation.PLATFORM_CLASS_PATH,
-						StandardLocation.SOURCE_PATH,
-						StandardLocation.SOURCE_OUTPUT,
-						StandardLocation.CLASS_PATH)
-				.stream()
-				.map(loc -> Optional
-						.ofNullable(standardManager.getLocation(loc)))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.<File> flatMap(files -> stream(files.spliterator(), false))
-				.map(file -> FileSystem.getClasspath(file.getAbsolutePath(),
-						null, null))
-				.filter(cp -> cp != null)
-				.toArray(Classpath[]::new);
-		return new ClasspathContainer(paths);
-	}
+  public static FileSystem configure(StandardJavaFileManager standardManager) {
+    var platform = Util.collectPlatformLibraries(Util.getJavaHome()).stream();
+    var standards =
+        Arrays.asList(
+                StandardLocation.SOURCE_PATH,
+                StandardLocation.SOURCE_OUTPUT,
+                StandardLocation.CLASS_PATH)
+            .stream()
+            .map(loc -> Optional.ofNullable(standardManager.getLocation(loc)))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .<File>flatMap(files -> StreamSupport.stream(files.spliterator(), false))
+            .map(
+                file -> {
+                  return FileSystem.getClasspath(file.getAbsolutePath(), null, null);
+                })
+            .filter(cp -> cp != null);
+    Classpath[] paths = Stream.concat(platform, standards).toArray(Classpath[]::new);
+    return new ClasspathContainer(paths);
+  }
 }

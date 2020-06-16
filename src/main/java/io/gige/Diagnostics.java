@@ -20,35 +20,30 @@ import java.util.function.Predicate;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public interface Diagnostics {
 
-	static Predicate<Diagnostic<? extends JavaFileObject>> filter(
-			Class<?> clazz) {
-		return filter(clazz.getCanonicalName());
-	}
+  static Predicate<Diagnostic<? extends JavaFileObject>> filter(Class<?> clazz) {
+    return filter(clazz.getCanonicalName());
+  }
 
-	static Predicate<Diagnostic<? extends JavaFileObject>> filter(
-			String className) {
-		String path = className.replace('.', '/');
-		return new Predicate<Diagnostic<? extends JavaFileObject>>() {
-			@Override
-			public boolean test(Diagnostic<? extends JavaFileObject> diag) {
-				JavaFileObject obj = diag.getSource();
-				return obj != null && obj.toUri().getPath().contains(path);
-			}
-		};
-	}
+  static Predicate<Diagnostic<? extends JavaFileObject>> filter(String className) {
+    String path = className.replace('.', '/');
+    return new Predicate<Diagnostic<? extends JavaFileObject>>() {
+      @Override
+      public boolean test(Diagnostic<? extends JavaFileObject> diag) {
+        JavaFileObject obj = diag.getSource();
+        return obj != null && obj.toUri().getPath().contains(path);
+      }
+    };
+  }
 
-	static Predicate<Diagnostic<? extends JavaFileObject>> filter(
-			Diagnostic.Kind kind) {
-		return new Predicate<Diagnostic<? extends JavaFileObject>>() {
-			@Override
-			public boolean test(Diagnostic<? extends JavaFileObject> t) {
-				return t.getKind().equals(kind);
-			}
-		};
-	}
+  static Predicate<Diagnostic<? extends JavaFileObject>> filter(Diagnostic.Kind kind) {
+    return new Predicate<Diagnostic<? extends JavaFileObject>>() {
+      @Override
+      public boolean test(Diagnostic<? extends JavaFileObject> t) {
+        return t.getKind().equals(kind);
+      }
+    };
+  }
 }
