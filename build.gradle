@@ -1,14 +1,13 @@
 plugins {
   id 'java'
-  
   id 'maven-publish'
   id 'signing'
+  id 'io.codearte.nexus-staging' version '0.21.2'
   id 'de.marcphilipp.nexus-publish' version '0.4.0'
 }
 
 group = 'io.gige'
-version = "0.5.0-SNAPSHOT"
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+version = '0.5.0'
 
 repositories {
   jcenter()
@@ -23,7 +22,7 @@ tasks.withType(SourceTask).findAll { it.hasProperty('options') } *.options*.enco
 
 test {
   systemProperty("java.awt.headless", "true")
-//  useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 
@@ -97,21 +96,29 @@ publishing {
 }
 
 signing {
-  required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+  required { gradle.taskGraph.hasTask("publish") }
 
   useGpgCmd()
   sign publishing.publications.mavenJava
 }
 
+nexusStaging {
+  packageGroup = project.group
+  stagingProfileId = '1c463cbf19114'
+  username = project.hasProperty('nexusUsername') ? project.getProperty('nexusUsername') : null
+  password = project.hasProperty('nexusPassword') ? project.getProperty('nexusPassword') : null
+}
+
 nexusPublishing {
   repositories {
-    sonatype {
-      username = "your-username"
-      password = "your-password"
-    }
+    sonatype()
   }
 }
 
 task install {
   dependsOn 'publishToMavenLocal'
+}
+
+task release {
+  dependsOn 'closeAndReleaseRepository'
 }
