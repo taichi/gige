@@ -16,6 +16,8 @@ repositories {
 
 java {
   sourceCompatibility = targetCompatibility = JavaVersion.VERSION_14
+  withJavadocJar()
+  withSourcesJar()
 }
 
 tasks.withType(SourceTask).findAll { it.hasProperty('options') } *.options*.encoding = 'UTF-8'
@@ -44,28 +46,10 @@ jar.manifest {
   )
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-  classifier = 'sources'
-  from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-  classifier = "javadoc"
-  from javadoc
-}
-
-artifacts {
-  archives sourcesJar
-  archives javadocJar
-}
-
 publishing {
   publications {
      mavenJava(MavenPublication) {
       from components.java
-
-      artifact sourcesJar
-      artifact javadocJar
       
       pom {
         scm {
