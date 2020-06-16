@@ -1,25 +1,30 @@
 # Gige
 
-Gige is the Cross Compiler testing Framework.
+Gige is the Cross Compiler Annotation Processor testing Framework.
 
 Gige supports...
 
+* Open JDK compiler
 * Oracle JDK compiler
 * Eclipse compiler for Java
 
-Gige also works with JUnit very well.
+Gige also works with JUnit5 very well.
 
 ## Getting Started
 
 ### Add dependency to your build.gradle
 
 ```groovy
-apply plugin: 'java'
+plugins {
+  id 'java'
+}
 
-repositories.jcenter()
+repositories.mavenCentral()
 
 dependencies {
-    testCompile 'io.gige:gige:0.4.2'
+  testImplementation 'io.gige:gige:0.5.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 
 sourceCompatibility = targetCompatibility = 1.8
@@ -30,123 +35,30 @@ sourceCompatibility = targetCompatibility = 1.8
 #### most simple code
 
 ```java
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import io.gige.*;
-import io.gige.junit.CompilerRunner;
+import io.gige.junit.CompilerExtension;
 
-import org.junit.*;
-import org.junit.runner.RunWith;
+@ExtendWith(CompilerExtension.class)
+public class UseCompilerExtension {
 
-@RunWith(CompilerRunner.class)
-public class UseCompilerRunner {
-
-	@Compilers
-	CompilerContext context;
-
-	@Before
-	public void setUp() {
-		// CompilerRunner close CompilerContext automatically.
-		this.context.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag))
-				.setUnits(TestSource.class);
-	}
-
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
-	}
+  @TestTemplate
+  @Compilers
+  public void test(CompilerContext context) throws Exception {
+    // CompilerExtension close CompilerContext automatically.
+    context
+        .setSourcePath("src/test/java", "src/test/resources")
+        .set(diag -> System.out.println(diag))
+        .setUnits(TestSource.class);
+    CompilationResult result = context.compile();
+    Assertions.assertTrue(result.success());
+  }
 }
+
 ```
-this is the simple way. but some magic.
-
-
-### standard code
-
-```java
-import static org.junit.Assert.assertTrue;
-import io.gige.*;
-
-import org.junit.experimental.theories.*;
-import org.junit.runner.RunWith;
-
-@RunWith(Theories.class)
-public class UseTheories {
-
-	@DataPoints
-	public static Compilers.Type[] jdk = Compilers.Type.values();
-
-	CompilerContext setUp(CompilerContext context) {
-		return context.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag));
-	}
-
-	@Theory
-	public void test(Compilers.Type type) throws Exception {
-		// you must release external resources
-		try (CompilerContext context = new CompilerContext(type)) {
-			CompilationResult result = setUp(context)
-					.setUnits(TestSource.class).compile();
-			assertTrue(result.success());
-		}
-	}
-}
-```
-this is the most standard way to write test code.
-but `Theories` is experimental yet.
-
-
-### not recommended way
-
-```java
-import static org.junit.Assert.assertTrue;
-import io.gige.*;
-
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
-
-@RunWith(Parameterized.class)
-public class UseParameterized {
-
-	@Parameters(name = "{0}")
-	public static Compilers.Type[][] newContexts() {
-		return new Compilers.Type[][] { { Compilers.Type.Standard },
-				{ Compilers.Type.Eclipse } };
-	}
-
-	@Parameter
-	public Compilers.Type type;
-
-	CompilerContext context;
-
-	@Before
-	public void setUp() {
-		this.context = new CompilerContext(this.type);
-		this.context.setSourcePath("src/test/java", "src/test/resources")
-				.set(diag -> System.out.println(diag))
-				.setUnits(TestSource.class);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		// you must release external resources here.
-		this.context.close();
-	}
-
-	@Test
-	public void test() throws Exception {
-		CompilationResult result = this.context.compile();
-		assertTrue(result.success());
-	}
-}
-```
-
-this way isn't recommended way because this is very redundant code, but works well.
-
-
 
 # License
 

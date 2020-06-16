@@ -27,12 +27,12 @@ import io.gige.junit.CompilerExtension;
 
 /** @author taichi */
 @ExtendWith(CompilerExtension.class)
-public class UseCompilerRunner {
+public class UseCompilerExtension {
 
   @TestTemplate
   @Compilers
   public void test(CompilerContext context) throws Exception {
-    // CompilerRunner close CompilerContext automatically.
+    // CompilerExtension close CompilerContext automatically.
     context
         .setSourcePath("src/test/java", "src/test/resources")
         .set(diag -> System.out.println(diag))
