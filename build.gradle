@@ -52,8 +52,11 @@ publishing {
       from components.java
       
       pom {
+        def gh = 'https://github.com/taichi/gige'
+        name = 'Gige'
+        description = 'Cross Compiler Annotation Processor Testing library'
+        url = gh
         scm {
-          def gh = 'https://github.com/taichi/gige'
           url = gh
           connection = "scm:git:${gh}"
           developerConnection = "scm:git:${gh}"
