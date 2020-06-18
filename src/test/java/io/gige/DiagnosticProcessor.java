@@ -26,38 +26,32 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 @SupportedAnnotationTypes("io.gige.TestAnnotation")
 public class DiagnosticProcessor extends AbstractProcessor {
 
-	@Override
-	public SourceVersion getSupportedSourceVersion() {
-		return SourceVersion.latest();
-	}
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latest();
+  }
 
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations,
-			RoundEnvironment env) {
-		if (env.processingOver()) {
-			return false;
-		}
+  @Override
+  public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+    if (env.processingOver()) {
+      return false;
+    }
 
-		Messager messager = processingEnv.getMessager();
-		messager.printMessage(Kind.NOTE, "NOTE message");
+    Messager messager = this.processingEnv.getMessager();
+    messager.printMessage(Kind.NOTE, "NOTE message");
 
-		annotations
-				.stream()
-				.flatMap(a -> ElementFilter
-						.typesIn(env.getElementsAnnotatedWith(a))
-						.stream())
-				.forEach(t ->
-		{
-					messager.printMessage(Kind.ERROR, "ERROR message", t);
-					messager.printMessage(Kind.WARNING, "WARNING message", t);
-				});
-		return false;
-	}
-
+    annotations
+        .stream()
+        .flatMap(a -> ElementFilter.typesIn(env.getElementsAnnotatedWith(a)).stream())
+        .forEach(
+            t -> {
+              messager.printMessage(Kind.ERROR, "ERROR message", t);
+              messager.printMessage(Kind.WARNING, "WARNING message", t);
+            });
+    return false;
+  }
 }

@@ -15,34 +15,30 @@
  */
 package io.gige;
 
+import java.util.function.Function;
+
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+
 import io.gige.internal.FileUnit;
 import io.gige.internal.OnTheFlyUnit;
 
-import java.util.function.Function;
+/** @author taichi */
+public interface Unit extends Function<JavaFileManager, JavaFileObject> {
 
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
+  static Unit of(String className) {
+    return new FileUnit(className);
+  }
 
-/**
- * @author taichi
- */
-public interface Unit
-		extends Function<StandardJavaFileManager, JavaFileObject> {
+  static Unit of(Class<?> clazz) {
+    return Unit.of(clazz.getCanonicalName());
+  }
 
-	static Unit of(String className) {
-		return new FileUnit(className);
-	}
+  static Unit of(String className, CharSequence source) {
+    return new OnTheFlyUnit(className, source);
+  }
 
-	static Unit of(Class<?> clazz) {
-		return of(clazz.getCanonicalName());
-	}
-
-	static Unit of(String className, CharSequence source) {
-		return new OnTheFlyUnit(className, source);
-	}
-
-	static Unit of(Class<?> clazz, CharSequence source) {
-		return new OnTheFlyUnit(clazz.getCanonicalName(), source);
-	}
-
+  static Unit of(Class<?> clazz, CharSequence source) {
+    return new OnTheFlyUnit(clazz.getCanonicalName(), source);
+  }
 }

@@ -20,34 +20,30 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 
-/**
- * @author taichi
- */
-public class DiagnosticListenerWrapper
-		implements DiagnosticListener<JavaFileObject> {
+/** @author taichi */
+public class DiagnosticListenerWrapper implements DiagnosticListener<JavaFileObject> {
 
-	final DiagnosticListener<? super JavaFileObject> delegate;
-	boolean hasError = false;
+  final DiagnosticListener<? super JavaFileObject> delegate;
+  boolean hasError = false;
 
-	public DiagnosticListenerWrapper(
-			DiagnosticListener<? super JavaFileObject> delegate) {
-		super();
-		this.delegate = delegate;
-	}
+  public DiagnosticListenerWrapper(DiagnosticListener<? super JavaFileObject> delegate) {
+    super();
+    this.delegate = delegate;
+  }
 
-	@Override
-	public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-		if (diagnostic.getKind().equals(Kind.ERROR)) {
-			this.hasError = true;
-		}
-		this.delegate.report(diagnostic);
-	}
+  @Override
+  public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+    if (diagnostic.getKind().equals(Kind.ERROR)) {
+      this.hasError = true;
+    }
+    this.delegate.report(diagnostic);
+  }
 
-	public boolean hasError() {
-		return this.hasError;
-	}
+  public boolean hasError() {
+    return this.hasError;
+  }
 
-	public boolean succeed() {
-		return this.hasError == false;
-	}
+  public boolean succeed() {
+    return this.hasError == false;
+  }
 }

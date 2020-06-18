@@ -27,76 +27,71 @@ import org.eclipse.jdt.internal.compiler.apt.dispatch.AptProblem;
 import org.eclipse.jdt.internal.compiler.apt.dispatch.BaseMessagerImpl;
 import org.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class MessagerImpl implements Messager {
 
-	final BaseProcessingEnvImpl _processingEnv;
-	final DiagnosticListener<? super JavaFileObject> diagnosticListener;
+  final BaseProcessingEnvImpl _processingEnv;
+  final DiagnosticListener<? super JavaFileObject> diagnosticListener;
 
-	public MessagerImpl(BaseProcessingEnvImpl env,
-			DiagnosticListener<? super JavaFileObject> diagnosticListener) {
-		this._processingEnv = env;
-		this.diagnosticListener = diagnosticListener;
-	}
+  public MessagerImpl(
+      BaseProcessingEnvImpl env, DiagnosticListener<? super JavaFileObject> diagnosticListener) {
+    this._processingEnv = env;
+    this.diagnosticListener = diagnosticListener;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
-	 * .Kind, java.lang.CharSequence)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg) {
-		printMessage(kind, msg, null, null, null);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
+   * .Kind, java.lang.CharSequence)
+   */
+  @Override
+  public void printMessage(Kind kind, CharSequence msg) {
+    this.printMessage(kind, msg, null, null, null);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
-	 * .Kind, java.lang.CharSequence, javax.lang.model.element.Element)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e) {
-		printMessage(kind, msg, e, null, null);
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
+   * .Kind, java.lang.CharSequence, javax.lang.model.element.Element)
+   */
+  @Override
+  public void printMessage(Kind kind, CharSequence msg, Element e) {
+    this.printMessage(kind, msg, e, null, null);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
-	 * .Kind, java.lang.CharSequence, javax.lang.model.element.Element,
-	 * javax.lang.model.element.AnnotationMirror)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e,
-			AnnotationMirror a) {
-		printMessage(kind, msg, e, a, null);
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
+   * .Kind, java.lang.CharSequence, javax.lang.model.element.Element,
+   * javax.lang.model.element.AnnotationMirror)
+   */
+  @Override
+  public void printMessage(Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
+    this.printMessage(kind, msg, e, a, null);
+  }
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
-	 * .Kind, java.lang.CharSequence, javax.lang.model.element.Element,
-	 * javax.lang.model.element.AnnotationMirror,
-	 * javax.lang.model.element.AnnotationValue)
-	 */
-	@Override
-	public void printMessage(Kind kind, CharSequence msg, Element e,
-			AnnotationMirror a, AnnotationValue v) {
-		if (kind == Kind.ERROR) {
-			_processingEnv.setErrorRaised(true);
-		}
-		AptProblem problem = BaseMessagerImpl.createProblem(kind, msg, e, a, v);
-		this.diagnosticListener.report(new DiagnosticAdapter(kind, problem));
-	}
-
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic
+   * .Kind, java.lang.CharSequence, javax.lang.model.element.Element,
+   * javax.lang.model.element.AnnotationMirror,
+   * javax.lang.model.element.AnnotationValue)
+   */
+  @Override
+  public void printMessage(
+      Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
+    if (kind == Kind.ERROR) {
+      this._processingEnv.setErrorRaised(true);
+    }
+    AptProblem problem = BaseMessagerImpl.createProblem(kind, msg, e, a, v);
+    this.diagnosticListener.report(new DiagnosticAdapter(kind, problem));
+  }
 }

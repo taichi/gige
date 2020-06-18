@@ -15,53 +15,56 @@
  */
 package io.gige.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author taichi
- */
+/** @author taichi */
 public class ZipperTest {
 
-	@Test
-	public void same() {
-		List<String> zipped = Zipper
-				.of(Stream.of(1, 2, 3), Stream.of(10, 20, 30), (l, r) ->
-		{
-					return l + " " + r;
-				})
-				.collect(Collectors.toList());
-		assertEquals("1 10", zipped.get(0));
-		assertEquals("2 20", zipped.get(1));
-		assertEquals("3 30", zipped.get(2));
-	}
+  @Test
+  public void same() {
+    List<String> zipped =
+        Zipper.of(
+                Stream.of(1, 2, 3),
+                Stream.of(10, 20, 30),
+                (l, r) -> {
+                  return l + " " + r;
+                })
+            .collect(Collectors.toList());
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
+    Assertions.assertEquals("3 30", zipped.get(2));
+  }
 
-	@Test
-	public void leftMin() throws Exception {
-		List<String> zipped = Zipper
-				.of(Stream.of(1, 2), Stream.of(10, 20, 30), (l, r) ->
-		{
-					return l + " " + r;
-				})
-				.collect(Collectors.toList());
-		assertEquals("1 10", zipped.get(0));
-		assertEquals("2 20", zipped.get(1));
-	}
+  @Test
+  public void leftMin() throws Exception {
+    List<String> zipped =
+        Zipper.of(
+                Stream.of(1, 2),
+                Stream.of(10, 20, 30),
+                (l, r) -> {
+                  return l + " " + r;
+                })
+            .collect(Collectors.toList());
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
+  }
 
-	@Test
-	public void rightMin() throws Exception {
-		List<String> zipped = Zipper
-				.of(Stream.of(1, 2, 3), Stream.of(10, 20), (l, r) ->
-		{
-					return l + " " + r;
-				})
-				.collect(Collectors.toList());
-		assertEquals("1 10", zipped.get(0));
-		assertEquals("2 20", zipped.get(1));
-	}
+  @Test
+  public void rightMin() throws Exception {
+    List<String> zipped =
+        Zipper.of(
+                Stream.of(1, 2, 3),
+                Stream.of(10, 20),
+                (l, r) -> {
+                  return l + " " + r;
+                })
+            .collect(Collectors.toList());
+    Assertions.assertEquals("1 10", zipped.get(0));
+    Assertions.assertEquals("2 20", zipped.get(1));
+  }
 }

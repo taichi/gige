@@ -33,149 +33,135 @@ import javax.lang.model.element.VariableElement;
 /**
  * replacement of javax.lang.model.util.ElementFilter.<br>
  * this class built on Java8 Stream API.
- * 
+ *
  * @author taichi
  */
 public interface ElementFilter {
 
-	public static Stream<VariableElement> fieldsIn(TypeElement element) {
-		return fieldsIn(element.getEnclosedElements());
-	}
+  public static Stream<VariableElement> fieldsIn(TypeElement element) {
+    return fieldsIn(element.getEnclosedElements());
+  }
 
-	public static <T extends Element> Stream<VariableElement> fieldsIn(
-			Iterable<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<VariableElement> fieldsIn(Iterable<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return fieldsIn(StreamSupport.stream(elements.spliterator(), false));
-	}
+    return fieldsIn(StreamSupport.stream(elements.spliterator(), false));
+  }
 
-	public static <T extends Element> Stream<VariableElement> fieldsIn(
-			Stream<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<VariableElement> fieldsIn(Stream<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return elements.filter(fields()).map(VariableElement.class::cast);
-	}
+    return elements.filter(fields()).map(VariableElement.class::cast);
+  }
 
-	public static <T extends Element> Predicate<T> fields() {
-		return of(ElementKind.FIELD, ElementKind.ENUM_CONSTANT);
-	}
+  public static <T extends Element> Predicate<T> fields() {
+    return of(ElementKind.FIELD, ElementKind.ENUM_CONSTANT);
+  }
 
-	public static Stream<ExecutableElement> constructorsIn(
-			TypeElement element) {
-		return constructorsIn(element.getEnclosedElements());
-	}
+  public static Stream<ExecutableElement> constructorsIn(TypeElement element) {
+    return constructorsIn(element.getEnclosedElements());
+  }
 
-	public static <T extends Element> Stream<ExecutableElement> constructorsIn(
-			Iterable<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<ExecutableElement> constructorsIn(Iterable<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return constructorsIn(
-				StreamSupport.stream(elements.spliterator(), false));
-	}
+    return constructorsIn(StreamSupport.stream(elements.spliterator(), false));
+  }
 
-	public static <T extends Element> Stream<ExecutableElement> constructorsIn(
-			Stream<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<ExecutableElement> constructorsIn(Stream<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return elements
-				.filter(constructors())
-				.map(ExecutableElement.class::cast);
-	}
+    return elements.filter(constructors()).map(ExecutableElement.class::cast);
+  }
 
-	public static <T extends Element> Predicate<T> constructors() {
-		return of(ElementKind.CONSTRUCTOR);
-	}
+  public static <T extends Element> Predicate<T> constructors() {
+    return of(ElementKind.CONSTRUCTOR);
+  }
 
-	public static Stream<ExecutableElement> methodsIn(TypeElement element) {
-		return methodsIn(element.getEnclosedElements());
-	}
+  public static Stream<ExecutableElement> methodsIn(TypeElement element) {
+    return methodsIn(element.getEnclosedElements());
+  }
 
-	public static <T extends Element> Stream<ExecutableElement> methodsIn(
-			Iterable<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<ExecutableElement> methodsIn(Iterable<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return methodsIn(StreamSupport.stream(elements.spliterator(), false));
-	}
+    return methodsIn(StreamSupport.stream(elements.spliterator(), false));
+  }
 
-	public static <T extends Element> Stream<ExecutableElement> methodsIn(
-			Stream<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<ExecutableElement> methodsIn(Stream<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return elements.filter(methods()).map(ExecutableElement.class::cast);
-	}
+    return elements.filter(methods()).map(ExecutableElement.class::cast);
+  }
 
-	public static <T extends Element> Predicate<T> methods() {
-		return of(ElementKind.METHOD);
-	}
+  public static <T extends Element> Predicate<T> methods() {
+    return of(ElementKind.METHOD);
+  }
 
-	public static <T extends Element> Stream<TypeElement> typesIn(
-			Iterable<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<TypeElement> typesIn(Iterable<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return typesIn(StreamSupport.stream(elements.spliterator(), false));
-	}
+    return typesIn(StreamSupport.stream(elements.spliterator(), false));
+  }
 
-	public static <T extends Element> Stream<TypeElement> typesIn(
-			Stream<T> elements) {
-		Objects.requireNonNull(elements);
-		return elements.filter(types()).map(TypeElement.class::cast);
-	}
+  public static <T extends Element> Stream<TypeElement> typesIn(Stream<T> elements) {
+    Objects.requireNonNull(elements);
+    return elements.filter(types()).map(TypeElement.class::cast);
+  }
 
-	public static <T extends Element> Predicate<T> types() {
-		return of(EnumSet.of(ElementKind.CLASS, ElementKind.ENUM,
-				ElementKind.INTERFACE, ElementKind.ANNOTATION_TYPE));
-	}
+  public static <T extends Element> Predicate<T> types() {
+    return of(
+        EnumSet.of(
+            ElementKind.CLASS,
+            ElementKind.ENUM,
+            ElementKind.INTERFACE,
+            ElementKind.ANNOTATION_TYPE));
+  }
 
-	public static <T extends Element> Stream<PackageElement> packagesIn(
-			Iterable<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<PackageElement> packagesIn(Iterable<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return packagesIn(StreamSupport.stream(elements.spliterator(), false));
-	}
+    return packagesIn(StreamSupport.stream(elements.spliterator(), false));
+  }
 
-	public static <T extends Element> Stream<PackageElement> packagesIn(
-			Stream<T> elements) {
-		Objects.requireNonNull(elements);
+  public static <T extends Element> Stream<PackageElement> packagesIn(Stream<T> elements) {
+    Objects.requireNonNull(elements);
 
-		return elements.filter(packages()).map(PackageElement.class::cast);
-	}
+    return elements.filter(packages()).map(PackageElement.class::cast);
+  }
 
-	public static <T extends Element> Predicate<T> packages() {
-		return of(ElementKind.PACKAGE);
-	}
+  public static <T extends Element> Predicate<T> packages() {
+    return of(ElementKind.PACKAGE);
+  }
 
-	public static <T extends Element> Predicate<T> of(ElementKind ek) {
-		return of(EnumSet.of(ek));
-	}
+  public static <T extends Element> Predicate<T> of(ElementKind ek) {
+    return of(EnumSet.of(ek));
+  }
 
-	public static <T extends Element> Predicate<T> of(ElementKind ek1,
-			ElementKind ek2) {
-		return of(EnumSet.of(ek1, ek2));
-	}
+  public static <T extends Element> Predicate<T> of(ElementKind ek1, ElementKind ek2) {
+    return of(EnumSet.of(ek1, ek2));
+  }
 
-	public static <T extends Element> Predicate<T> of(ElementKind ek1,
-			ElementKind ek2, ElementKind ek3) {
-		return of(EnumSet.of(ek1, ek2, ek3));
-	}
+  public static <T extends Element> Predicate<T> of(
+      ElementKind ek1, ElementKind ek2, ElementKind ek3) {
+    return of(EnumSet.of(ek1, ek2, ek3));
+  }
 
-	public static <T extends Element> Predicate<T> of(
-			Set<ElementKind> condition) {
-		Objects.requireNonNull(condition);
+  public static <T extends Element> Predicate<T> of(Set<ElementKind> condition) {
+    Objects.requireNonNull(condition);
 
-		return t -> condition.contains(t.getKind());
-	}
+    return t -> condition.contains(t.getKind());
+  }
 
-	public static <T extends Element> Predicate<T> simpleName(
-			CharSequence name) {
-		Objects.requireNonNull(name);
+  public static <T extends Element> Predicate<T> simpleName(CharSequence name) {
+    Objects.requireNonNull(name);
 
-		return t -> t.getSimpleName().contentEquals(name);
-	}
+    return t -> t.getSimpleName().contentEquals(name);
+  }
 
-	public static <T extends QualifiedNameable> Predicate<T> qualifiedName(
-			CharSequence name) {
-		Objects.requireNonNull(name);
+  public static <T extends QualifiedNameable> Predicate<T> qualifiedName(CharSequence name) {
+    Objects.requireNonNull(name);
 
-		return t -> t.getQualifiedName().contentEquals(name);
-	}
+    return t -> t.getQualifiedName().contentEquals(name);
+  }
 }
