@@ -15,6 +15,7 @@
  */
 package io.gige;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -347,5 +348,11 @@ public class CompilerContextTest {
     CompilationResult result = context.set(processor).compile();
     Assertions.assertTrue(result.success());
     Assertions.assertTrue(processor.found);
+  }
+
+  @TestTemplate
+  public void sourceOption(CompilerContext context) throws Exception {
+    var result = context.setOptions(Arrays.asList("--enable-preview", "-source", "14")).compile();
+    Assertions.assertTrue(result.success());
   }
 }

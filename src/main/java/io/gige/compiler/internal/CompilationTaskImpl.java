@@ -18,6 +18,7 @@ package io.gige.compiler.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -105,11 +106,16 @@ public class CompilationTaskImpl implements CompilationTask {
 
   protected Main parseOptions(
       PrintWriter out, Iterable<String> argv, Iterable<? extends JavaFileObject> compilationUnits) {
+    var args = new ArrayList<>();
+    argv.forEach(args::add);
     Map<String, String> defaults = new HashMap<>();
-    defaults.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_11);
-    defaults.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_11);
-    defaults.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_11);
-
+    if (args.contains("-source") == false) {
+      defaults.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_11);
+    }
+    if (args.contains("-target") == false) {
+      defaults.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_11);
+      defaults.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_11);
+    }
     Stream<String> files =
         Stream.concat(
             StreamSupport.stream(argv.spliterator(), false),
